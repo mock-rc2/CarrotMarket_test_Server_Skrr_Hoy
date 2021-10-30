@@ -2,7 +2,7 @@
 
 ![2021-10-30 진행사항](images/2021-10-30_진행사항.png)
 
-#### 1. 기획서 작성
+### 1. 기획서 작성
 
 ##### 개발 범위 설정
 
@@ -37,7 +37,7 @@
 11. 동네 생활
     <br>
 
-##### 2. [ERD 설계](https://app.quickdatabasediagrams.com/#/d/YWyh7C)
+### 2. [ERD 설계](https://app.quickdatabasediagrams.com/#/d/YWyh7C)
 
 - 거래 기능에 필수적인 테이블 구조 설계
 - 크게 user 도메인과 post 도메인으로 분류
