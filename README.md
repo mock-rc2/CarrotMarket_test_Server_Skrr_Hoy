@@ -6,13 +6,14 @@
 생소한 앱을 구현해야하면 분석에 많은 시간이 들 것 같아 걱정이었는데 생각보다는 익숙한 앱을 하게되어 좋았다.
 OT 이후 바로 기획서 작성을 해야해서 프론트 분들과 첫 릴레이 회의를 하게 되었는데, 처음으로 하는 협업이라 두 분 께서 친절하게 해주셨는데도 불구하고 의견을 나누는데 시간이 걸렸다.
 각자의 의견을 보충해가며 기획서를 작성하였고 시간안에 잘 제출할 수 있었다. 후에 개발 트레이너 분들의 피드백을 받아 수정했다.
-[-.pdf](https://github.com/mock-rc2/CarrotMarket_test_Server_Skrr_Hoy/files/7446724/-.pdf)
+
+파일 : [-.pdf](https://github.com/mock-rc2/CarrotMarket_test_Server_Skrr_Hoy/files/7446724/-.pdf)
 
 이후 Server는 두 명이서 한 서버를 구축하기 때문에 바로 이어서 스컬님과 ERD 짜기에 돌입했다.
 
 같이 큰 틀을 짰는데, Location을 어떤식으로 처리할 지에 대해 많은 의견이 주고받아졌고 구현 방향이 정해졌다.
 우리가 시도하는 방식은 town에 서울의 모든 행정동과 행정동의 위경도를 저장하고(약 400개), 홈 화면 등에서 위치에 따른 물품 조회를 하면 조회하려는 지역의 위경도에서 반경 N km 주변의 좌표르 구해 그 좌표 내에 중심 좌표가 있는 행정동에서 올라온 물품을 나타내는 식으로 구현할 예정이다.
 나는 유저와 로케이션, 채팅 쪽 ERD를 위주로 구성하였다.
-https://app.quickdatabasediagrams.com/#/d/JD5GzH
+ERD 링크 : https://app.quickdatabasediagrams.com/#/d/JD5GzH
 
 내일은 API 명세서와 서버 구축을 할 예정이다.
