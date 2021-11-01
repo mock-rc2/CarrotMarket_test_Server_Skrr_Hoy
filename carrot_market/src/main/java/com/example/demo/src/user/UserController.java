@@ -48,7 +48,6 @@ public class UserController {
         try{
             // TODO: 로그인 값들에 대한 형식적인 validatin 처리해주셔야합니다!
             // TODO: 유저의 status ex) 비활성화된 유저, 탈퇴한 유저 등을 관리해주고 있다면 해당 부분에 대한 validation 처리도 해주셔야합니다.
-            System.out.println("check");
             //휴대폰번호 입력 체크
             if(postLoginReq.getPhoneNumber() == null){
                 return new BaseResponse<>(POST_USERS_EMPTY_PHONE);
@@ -58,9 +57,11 @@ public class UserController {
                 return new BaseResponse<>(POST_USERS_INVALID_PHONE);
             }
             //정상 상태 유저인지 체크
+            //1.탈퇴하거나 가입하지 않은 유저 -> 회원가입으로 유도, userId = -1
             int checkStatus = userProvider.checkStatus(postLoginReq.getPhoneNumber());
-            if(checkStatus == 0){//탈퇴한 유저라면
-                return new BaseResponse<>(POST_USERS_INVALID_USER);
+            if(checkStatus == 0){//정상 상태가 아닌 유저라면
+                PostLoginRes postLoginRes = new PostLoginRes(-1,"Invalid");
+                return new BaseResponse<>(postLoginRes);
             }
 
             PostLoginRes postLoginRes = userProvider.logIn(postLoginReq);
