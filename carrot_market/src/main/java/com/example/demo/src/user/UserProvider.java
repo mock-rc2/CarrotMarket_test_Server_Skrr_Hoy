@@ -32,5 +32,26 @@ public class UserProvider {
     }
 
 
+    public PostLoginRes logIn(PostLoginReq postLoginReq) throws BaseException{
+
+        try{
+        User user = userDao.getUsersByPhoneNumber(postLoginReq);
+        int userId = user.getUserId();
+        String jwt = jwtService.createJwt(userId);
+        return new PostLoginRes(userId,jwt);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+    }
+
+    //유저 상태 체크
+    public int checkStatus(String phoneNumber) throws BaseException{
+        try{
+            return userDao.checkStatus(phoneNumber);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
 }

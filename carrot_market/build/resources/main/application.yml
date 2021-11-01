@@ -10,4 +10,9 @@ spring:
     url: jdbc:mysql://skrrdb.cskwshv6nsnx.ap-northeast-2.rds.amazonaws.com/carrotMarket?autoReconnect=true
     username:  skrr
     password:  qwert12345
+<<<<<<< HEAD
     driver-class-name: com.mysql.cj.jdbc.Driver
+=======
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # driver-class-name: com.mysql.jdbc.Driver
+>>>>>>> main
