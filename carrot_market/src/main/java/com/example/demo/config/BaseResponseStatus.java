@@ -31,6 +31,10 @@ public enum BaseResponseStatus {
     POST_USERS_EXISTS_EMAIL(false,2017,"중복된 이메일입니다."),
 
 
+    // [POST] /users/logIn
+    POST_USERS_EMPTY_PHONE(false, 2018, "휴대폰번호를 입력해주세요."),
+    POST_USERS_INVALID_PHONE(false, 2019, "휴대폰번호 형식을 확인해주세요."),
+    POST_USERS_INVALID_USER(false, 2020, "탈퇴 또는 휴면 유저입니다. 확인해주세요."),
 
     /**
      * 3000 : Response 오류
