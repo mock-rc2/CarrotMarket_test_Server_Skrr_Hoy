@@ -36,3 +36,29 @@ API 명세서 : [API 명세서 Templete_초고.xlsx](https://g
 
 
 둘 다 9시간동안 계속하여 구글 meet으로 API 리스트 작업을 진행하다보니 많은 피로감이 느껴져서 디테일하게 API를 볼 수 없느 상태가 되어서 오늘은 API 명세서 작업까지만 하고 내일 오늘 한 명세서의 보완 작업과 서버 구축 후 API를 만들어 보기로 했다.
+
+
+
+11/1 개발일지
+
+오늘은 스컬님과 어제 작성한 API 명세서를 다듬어서 어제 잘못 기입한 부분들을 수정하고, 서버를 구축한 뒤 ERD를 DB에 넣는 작업을 우선적으로 진행하였다.
+
+API 명세서의 경우에는 여러 API를 빠른 시간 내에 짜다보니 method 부분이나 URL 부분에 문제가 있는 경우가 있어서 좀더 간략화하고 기능적으로 바꾸려고 노력했다.
+
+
+API 명세서 수정본 :[API 명세서 Templete_중반.xlsx](https://github.com/mock-rc2/CarrotMarket_test_Server_Skrr_Hoy/files/7454040/API.Templete_.xlsx)
+
+ERD를 막상 DB에 넣기 위해 SQL 문으로 뽑으니 오탈자가 많이 있어 수정하는 시간이 필요했다. 자동으로 인덱스가 증가하는 부분도 넣지 않은 걸 깨달아서 여러번 수정하였다.
+
+SQL에 삽입할 ERD 최종 : [QuickDBD-Carrot.txt](https://github.com/mock-rc2/CarrotMarket_test_Server_Skrr_Hoy/files/7454064/QuickDBD-Carrot.txt)
+
+
+서버 구축을 마친 뒤, DB를 추가한 다음 큰 과제가 남았었는데, 바로 서울의 모든 행정동을 테이블에 담는 내용이었다. 전 날, 내가 구글링을 통해 mysql에서 위경도가 있을 경우 반경 n km 안에 있는 좌표를 찾는 쿼리문을 찾아와 스컬님과 상의를 하였는데 이걸 구현하기 위해서는 테이블에 모든 행정동의 대표 위경도가 필요했기 때문이다. 다행이도 구글링 결과 누군가가 엑셀 파일로 정리해 놓은 행정동 모음이 있었고, 엑셀의 중복 데이터 제거 기능을 이용해 중복된 행정동을 제거한 후 데이터를 datagrip으로 삽입이 가능하게 csv파일로 만들어서 Town 테이블에 넣을 수 있었고, 쿼리문 테스트 결과 실행이 잘 되는것을 확인할 수 있었다.
+
+행정동 정리 엑셀, csv :[서울시_행정동_좌표2.csv](https://github.com/mock-rc2/CarrotMarket_test_Server_Skrr_Hoy/files/7454051/_._.2.csv)
+[서울시_행정동_좌표.xlsx](https://github.com/mock-rc2/CarrotMarket_test_Server_Skrr_Hoy/files/7454053/_._.xlsx)
+
+
+이후, user의 회원가입 기능과 logIn 기능을 담당하는 api를 제작하였다. 나는 logIn 기능을 맡았으며 스컬님이 회원가입 기능을 구현하셨다.
+
+내일은 api 명세서를 기능을 고려해 분담하는 과정을 거친 후 본격적으로 api를 제작할 예정이다.
