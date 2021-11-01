@@ -35,5 +35,27 @@ public class UserService {
 
     }
 
+    //POST
+    public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
+
+        try{
+            int townId = userDao.getTownId(postUserReq);
+            // townId가 null이라면? -> error catch?
+            int userId = userDao.createUser(postUserReq);
+
+            //주소 삽입
+            int addressId = userDao.createAddress(userId,townId);
+
+            //default 선택 주소 삽입
+            userDao.createAddressUser(userId,addressId);
+
+            //jwt 발급.
+            String jwt = jwtService.createJwt(userId);
+            return new PostUserRes(userId,jwt);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 
 }

@@ -1,5 +1,7 @@
 package com.example.demo.src.user;
 
+import com.example.demo.src.user.UserProvider;
+import com.example.demo.src.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.demo.config.BaseException;
@@ -37,6 +39,41 @@ public class UserController {
     }
 
     /**
+     * 회원가입 API
+     * [POST] /users
+     * @return BaseResponse<PostUserRes>
+     */
+    // Body
+    @ResponseBody
+    @PostMapping("")
+    public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
+
+        if(postUserReq.getCity() == null || postUserReq.getDistrict() == null || postUserReq.getTownName() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_ADDRESS);
+        }
+        if(postUserReq.getPhoneNumber() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_PHONENUMBER);
+        }
+        if(postUserReq.getNickName() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_NICKNAME);
+        }
+
+        if(!isRegexPhone(postUserReq.getPhoneNumber())){
+            return new BaseResponse<>(POST_USERS_INVALID_PHONE);
+        }
+
+        try{
+            PostUserRes postUserRes = userService.createUser(postUserReq);
+            return new BaseResponse<>(postUserRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+
+
+
+    /**
      * 로그인 API
      * [POST] /users/logIn
      * @return BaseResponse<PostLoginRes>
@@ -45,8 +82,8 @@ public class UserController {
     @PostMapping("/logIn")
     public BaseResponse<PostLoginRes> logIn(@RequestBody PostLoginReq postLoginReq){
         try{
-            // TODO: 로그인 값들에 대한 형식적인 validatin 처리해주셔야합니다!
-            // TODO: 유저의 status ex) 비활성화된 유저, 탈퇴한 유저 등을 관리해주고 있다면 해당 부분에 대한 validation 처리도 해주셔야합니다.
+
+
             System.out.println("check");
             //휴대폰번호 입력 체크
             if(postLoginReq.getPhoneNumber() == null){
