@@ -39,6 +39,11 @@ public class UserService {
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
 
         try{
+
+            if(userDao.checkPhoneNumber(postUserReq.getPhoneNumber()) == 1){
+                throw new BaseException(POST_USERS_DUPLICATE_PHONENUMBER);
+            }
+
             int townId = userDao.getTownId(postUserReq);
             // townId가 null이라면? -> error catch?
             int userId = userDao.createUser(postUserReq);

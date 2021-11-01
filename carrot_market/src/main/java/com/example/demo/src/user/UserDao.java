@@ -54,6 +54,7 @@ public class UserDao {
                 getTownIdParams);
     }
 
+
     public int createUser(PostUserReq postUserReq){
         String createUserQuery = "insert into User (phoneNumber, nickName, imageURL) VALUES (?,?,?)";
         Object[] createUserParams = new Object[]{postUserReq.getPhoneNumber(), postUserReq.getNickName(), postUserReq.getImageURL()};
@@ -75,6 +76,14 @@ public class UserDao {
         String createAddressUserQuery = "insert into AddressUser (addressId, userId) VALUES (?,?)";
         Object[] createAddressUserParams = new Object[]{addressId, userId};
         this.jdbcTemplate.update(createAddressUserQuery, createAddressUserParams);
+    }
+
+    public int checkPhoneNumber(String phoneNumber){
+        String checkStatusQuery = "select exists(select phoneNumber from User where phoneNumber = ? && status='Valid')";
+        String checkStatusParams = phoneNumber;
+        return this.jdbcTemplate.queryForObject(checkStatusQuery,
+                int.class,
+                checkStatusParams);
     }
 
 }
