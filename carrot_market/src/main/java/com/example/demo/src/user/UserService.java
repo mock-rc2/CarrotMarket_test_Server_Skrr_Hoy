@@ -43,16 +43,11 @@ public class UserService {
             if(userDao.checkPhoneNumber(postUserReq.getPhoneNumber()) == 1){
                 throw new BaseException(POST_USERS_DUPLICATE_PHONENUMBER);
             }
-
             int townId = userDao.getTownId(postUserReq);
-            // townId가 null이라면? -> error catch?
             int userId = userDao.createUser(postUserReq);
 
             //주소 삽입
-            int addressId = userDao.createAddress(userId,townId);
-
-            //default 선택 주소 삽입
-            userDao.createAddressUser(userId,addressId);
+            userDao.createAddress(userId,townId);
 
             //jwt 발급.
             String jwt = jwtService.createJwt(userId);

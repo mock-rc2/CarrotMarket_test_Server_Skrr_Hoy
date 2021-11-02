@@ -56,26 +56,18 @@ public class UserDao {
 
 
     public int createUser(PostUserReq postUserReq){
-        String createUserQuery = "insert into User (phoneNumber, nickName, imageURL) VALUES (?,?,?)";
+        String createUserQuery = "insert into User (phoneNumber, nickName, image) VALUES (?,?,?)";
         Object[] createUserParams = new Object[]{postUserReq.getPhoneNumber(), postUserReq.getNickName(), postUserReq.getImageURL()};
         this.jdbcTemplate.update(createUserQuery, createUserParams);
         String lastInserIdQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
     }
 
-    public int createAddress(int userId,int townId){
+    public void createAddress(int userId,int townId){
         String createAddressQuery = "insert into Address (userId,townId) VALUES (?,?)";
         Object[] createAddressParams = new Object[]{userId, townId};
         this.jdbcTemplate.update(createAddressQuery, createAddressParams);
 
-        String lastInserIdQuery = "select last_insert_id()";
-        return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
-    }
-
-    public void createAddressUser(int userId, int addressId){
-        String createAddressUserQuery = "insert into AddressUser (addressId, userId) VALUES (?,?)";
-        Object[] createAddressUserParams = new Object[]{addressId, userId};
-        this.jdbcTemplate.update(createAddressUserQuery, createAddressUserParams);
     }
 
     public int checkPhoneNumber(String phoneNumber){
