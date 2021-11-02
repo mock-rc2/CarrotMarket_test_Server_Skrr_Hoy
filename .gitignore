@@ -1,3 +1,3 @@
 .idea/
 logs/
-carrot_market/src/main/java/com/example/demo/config/secret/
+carrot_market/src/main/java/com/example/demo/config/secret/Secret.java
