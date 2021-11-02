@@ -60,8 +60,7 @@ public class UserController {
             //1.탈퇴하거나 가입하지 않은 유저 -> 회원가입으로 유도, userId = -1
             int checkStatus = userProvider.checkStatus(postLoginReq.getPhoneNumber());
             if(checkStatus == 0){//정상 상태가 아닌 유저라면
-                PostLoginRes postLoginRes = new PostLoginRes(-1,"Invalid");
-                return new BaseResponse<>(postLoginRes);
+                return new BaseResponse<>(POST_USERS_INVALID_USER);
             }
 
             PostLoginRes postLoginRes = userProvider.logIn(postLoginReq);
