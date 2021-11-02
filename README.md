@@ -82,3 +82,11 @@ API명세서 역시 문제가 많았는데, 한번 검토를 한 후에 스컬�
 수정한 ERD 최종 : https://app.quickdatabasediagrams.com/#/d/JD5GzH
 
 API 명세서 : https://docs.google.com/spreadsheets/d/1wmm6zQDVHvNAgIDc217vzNfrzQnAEfTgeliGeBPBEvk/edit#gid=1340372136
+
+전국 행정동(리 제외) 엑셀 시트, csv :[행정_법정동 중심좌표.csv](https://github.com/mock-rc2/CarrotMarket_test_Server_Skrr_Hoy/files/7461695/_.csv)
+[행정_법정동 중심좌표.xlsx](https://github.com/mock-rc2/CarrotMarket_test_Server_Skrr_Hoy/files/7461696/_.xlsx)
+
+
+전국 리,기타주소 엑셀시트, csv :[행정_법정동 중심좌표_리.csv](https://github.com/mock-rc2/CarrotMarket_test_Server_Skrr_Hoy/files/7461679/_._.csv)
+[행정_법정동 중심좌표_리.xlsx](https://github.com/mock-rc2/CarrotMarket_test_Server_Skrr_Hoy/files/7461686/_._.xlsx)
+
