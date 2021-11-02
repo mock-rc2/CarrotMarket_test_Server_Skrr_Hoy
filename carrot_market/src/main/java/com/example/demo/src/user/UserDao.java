@@ -19,6 +19,7 @@ public class UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+
     //휴대폰 번호로 유저 조회
     public User getUsersByPhoneNumber(PostLoginReq postLoginReq){
         String getUsersByPhoneNumberQuery = "select * from User where phoneNumber = ?";
@@ -45,6 +46,44 @@ public class UserDao {
     }
 
 
+    public int getTownId(PostUserReq postUserReq){
+        String getTownIdQuery = "select townId from Town where townName = ?";
+        String getTownIdParams = postUserReq.getTownName();
+        return this.jdbcTemplate.queryForObject(getTownIdQuery,
+                int.class,
+                getTownIdParams);
+    }
 
+
+    public int createUser(PostUserReq postUserReq){
+        String createUserQuery = "insert into User (phoneNumber, nickName, imageURL) VALUES (?,?,?)";
+        Object[] createUserParams = new Object[]{postUserReq.getPhoneNumber(), postUserReq.getNickName(), postUserReq.getImageURL()};
+        this.jdbcTemplate.update(createUserQuery, createUserParams);
+        String lastInserIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
+    }
+
+    public int createAddress(int userId,int townId){
+        String createAddressQuery = "insert into Address (userId,townId) VALUES (?,?)";
+        Object[] createAddressParams = new Object[]{userId, townId};
+        this.jdbcTemplate.update(createAddressQuery, createAddressParams);
+
+        String lastInserIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
+    }
+
+    public void createAddressUser(int userId, int addressId){
+        String createAddressUserQuery = "insert into AddressUser (addressId, userId) VALUES (?,?)";
+        Object[] createAddressUserParams = new Object[]{addressId, userId};
+        this.jdbcTemplate.update(createAddressUserQuery, createAddressUserParams);
+    }
+
+    public int checkPhoneNumber(String phoneNumber){
+        String checkStatusQuery = "select exists(select phoneNumber from User where phoneNumber = ? && status='Valid')";
+        String checkStatusParams = phoneNumber;
+        return this.jdbcTemplate.queryForObject(checkStatusQuery,
+                int.class,
+                checkStatusParams);
+    }
 
 }
