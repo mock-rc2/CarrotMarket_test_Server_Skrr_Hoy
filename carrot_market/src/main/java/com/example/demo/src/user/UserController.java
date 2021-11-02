@@ -83,7 +83,6 @@ public class UserController {
     public BaseResponse<PostLoginRes> logIn(@RequestBody PostLoginReq postLoginReq){
         try{
 
-            System.out.println("check");
             //휴대폰번호 입력 체크
             if(postLoginReq.getPhoneNumber() == null){
                 return new BaseResponse<>(POST_USERS_EMPTY_PHONE);
@@ -93,7 +92,7 @@ public class UserController {
                 return new BaseResponse<>(POST_USERS_INVALID_PHONE);
             }
             //정상 상태 유저인지 체크
-            //1.탈퇴하거나 가입하지 않은 유저 -> 회원가입으로 유도, userId = -1
+            //정상 상태가 아니라면 -> 회원가입으로 유도
             int checkStatus = userProvider.checkStatus(postLoginReq.getPhoneNumber());
             if(checkStatus == 0){//정상 상태가 아닌 유저라면
                 return new BaseResponse<>(POST_USERS_INVALID_USER);
