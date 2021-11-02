@@ -27,7 +27,7 @@ public enum BaseResponseStatus {
     POST_USERS_EMPTY_ADDRESS(false, 2011, "주소를 입력해주세요."),
     POST_USERS_EMPTY_PHONENUMBER(false, 2012, "전화번호를 입력해주세요."),
     POST_USERS_EMPTY_NICKNAME(false, 2013, "별명을 입력해주세요."),
-    POST_USERS_DUPLICATE_PHONENUMBER(false, 2014, "별명을 입력해주세요."),
+    POST_USERS_DUPLICATE_PHONENUMBER(false, 2014, "중복된 전화번호 입니다."),
 
 
     // [POST] /users
