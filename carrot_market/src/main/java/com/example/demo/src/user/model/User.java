@@ -12,5 +12,5 @@ public class User {
     private String phoneNumber;
     private String nickName;
     private String email;
-    private String imageURL;
+    private String image;
 }

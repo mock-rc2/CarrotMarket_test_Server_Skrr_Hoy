@@ -30,7 +30,7 @@ public class UserDao {
                         rs.getString("phoneNumber"),
                         rs.getString("nickName"),
                         rs.getString("email"),
-                        rs.getString("imageURL")),
+                        rs.getString("image")),
                 getUsersByPhoneNumberParams);
     }
 
