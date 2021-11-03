@@ -43,6 +43,9 @@ public enum BaseResponseStatus {
     POST_USERS_EMPTY_CERTIFICATIONNUM(false, 2021, "인증번호가 입력되지 않았습니다."),
     POST_USERS_INVALID_CERTIFICATIONNUM(false, 2022, "인증번호가 일치하지 않습니다."),
 
+    //[POST] /post/:userId
+    POST_POST_INVALID_USER(false, 2023, "조회할 수 없는 유저입니다."),
+
     /**
      * 3000 : Response 오류
      */
