@@ -30,7 +30,7 @@ public class UserDao {
                         rs.getString("phoneNumber"),
                         rs.getString("nickName"),
                         rs.getString("email"),
-                        rs.getString("imageURL")),
+                        rs.getString("image")),
                 getUsersByPhoneNumberParams);
     }
 
@@ -42,6 +42,16 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(checkStatusQuery,
                 int.class,
                 checkStatusParams);
+
+    }
+
+    //유저 인증번호 일치 여부 조회 쿼리
+    public int checkCertificationNum(PostLoginReq postLoginReq){
+        String checkCertificationNumQuery = "select exists(select phoneNumber from User where phoneNumber = ? && certificationNum= ?)";
+        Object[] checkCertificationNumParams = new Object[]{postLoginReq.getPhoneNumber(), postLoginReq.getCertificationNum()};
+        return this.jdbcTemplate.queryForObject(checkCertificationNumQuery,
+                int.class,
+                checkCertificationNumParams);
 
     }
 

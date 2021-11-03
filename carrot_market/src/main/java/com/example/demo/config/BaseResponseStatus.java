@@ -40,6 +40,8 @@ public enum BaseResponseStatus {
     POST_USERS_EMPTY_PHONE(false, 2018, "휴대폰번호를 입력해주세요."),
     POST_USERS_INVALID_PHONE(false, 2019, "휴대폰번호 형식을 확인해주세요."),
     POST_USERS_INVALID_USER(false, 2020, "회원가입이 필요한 유저입니다."),
+    POST_USERS_EMPTY_CERTIFICATIONNUM(false, 2021, "인증번호가 입력되지 않았습니다."),
+    POST_USERS_INVALID_CERTIFICATIONNUM(false, 2022, "인증번호가 일치하지 않습니다."),
 
     /**
      * 3000 : Response 오류
