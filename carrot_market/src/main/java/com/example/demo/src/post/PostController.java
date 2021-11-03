@@ -43,7 +43,7 @@ public class PostController {
     /**
      * 특정 유저전체 판매중, 판매완료 게시물 조회 API
      * [GET] /post/:userId
-     * @return BaseResponse<PostLoginRes>
+     * @return BaseResponse<AllPostSelectRes>
      */
     @ResponseBody
     @GetMapping("/{userId}")
@@ -52,6 +52,63 @@ public class PostController {
 
             List<AllPostSelectRes> allPostSelectRes = postProvider.allPostSelect(userId);
             return new BaseResponse<>(allPostSelectRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
+
+    /**
+     * 특정 유저전체 판매중 게시물 조회 API
+     * [GET] /post/sales/:userId
+     * @return BaseResponse<AllPostSelectRes>
+     */
+
+    @ResponseBody
+    @GetMapping("/sales/{userId}")
+    public BaseResponse<List<AllPostSelectRes>> salePostSelect(@PathVariable("userId") int userId){
+        try{
+
+            List<AllPostSelectRes> salePostSelect = postProvider.salePostSelect(userId);
+            return new BaseResponse<>(salePostSelect);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
+
+    /**
+     * 특정 유저전체 판매완료 게시물 조회 API
+     * [GET] /post/deal-complete/:sellerUserId
+     * @return BaseResponse<AllPostSelectRes>
+     */
+
+    @ResponseBody
+    @GetMapping("/deal-complete/{sellerUserId}/sale")
+    public BaseResponse<List<AllPostSelectRes>> dealCompletePostSelect(@PathVariable("sellerUserId") int sellerUserId){
+        try{
+
+            List<AllPostSelectRes> dealCompletePostSelect = postProvider.dealCompletePostSelect(sellerUserId);
+            return new BaseResponse<>(dealCompletePostSelect);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
+
+    /**
+     * 특정 유저전체 구매완료 게시물 조회 API
+     * [GET] /post/deal-complete/:buyerUserId
+     * @return BaseResponse<AllPostSelectRes>
+     */
+
+    @ResponseBody
+    @GetMapping("/deal-complete/{buyerUserId}/purchase")
+    public BaseResponse<List<AllPostSelectRes>> purchaseCompletePostSelect(@PathVariable("buyerUserId") int buyerUserId){
+        try{
+
+            List<AllPostSelectRes> purchaseCompletePostSelect = postProvider.purchaseCompletePostSelect(buyerUserId);
+            return new BaseResponse<>(purchaseCompletePostSelect);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
