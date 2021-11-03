@@ -47,17 +47,16 @@ public class UserDao {
 
 
     public int getTownId(PostUserReq postUserReq){
-        String getTownIdQuery = "select townId from Town where townName = ?";
-        String getTownIdParams = postUserReq.getTownName();
+        String getTownIdQuery = "select townId from Town where city = ? and district = ? and townName = ?";
         return this.jdbcTemplate.queryForObject(getTownIdQuery,
                 int.class,
-                getTownIdParams);
+                postUserReq.getCity(),postUserReq.getDistrict(), postUserReq.getTownName());
     }
 
 
-    public int createUser(PostUserReq postUserReq){
-        String createUserQuery = "insert into User (phoneNumber, nickName, image) VALUES (?,?,?)";
-        Object[] createUserParams = new Object[]{postUserReq.getPhoneNumber(), postUserReq.getNickName(), postUserReq.getImageURL()};
+    public int createUser(PostUserReq postUserReq, String certificationNum){
+        String createUserQuery = "insert into User (phoneNumber, nickName,certificationNum, image) VALUES (?,?,?,?)";
+        Object[] createUserParams = new Object[]{postUserReq.getPhoneNumber(), postUserReq.getNickName(),certificationNum, postUserReq.getImage()};
         this.jdbcTemplate.update(createUserQuery, createUserParams);
         String lastInserIdQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);

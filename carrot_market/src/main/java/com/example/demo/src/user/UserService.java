@@ -15,6 +15,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 
+import java.util.Random;
+
 import static com.example.demo.config.BaseResponseStatus.*;
 
 // Service Create, Update, Delete 의 로직 처리
@@ -44,7 +46,18 @@ public class UserService {
                 throw new BaseException(POST_USERS_DUPLICATE_PHONENUMBER);
             }
             int townId = userDao.getTownId(postUserReq);
-            int userId = userDao.createUser(postUserReq);
+
+
+            int leftLimit = 48; // numeral '0'
+            int rightLimit = 57; // letter '9'
+            int targetStringLength = 6;
+            Random random = new Random();
+            String certificationNum = random.ints(leftLimit,rightLimit + 1)
+                    .limit(targetStringLength)
+                    .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                    .toString();
+
+            int userId = userDao.createUser(postUserReq, certificationNum);
 
             //주소 삽입
             userDao.createAddress(userId,townId);

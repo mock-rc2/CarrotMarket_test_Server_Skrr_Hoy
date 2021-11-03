@@ -10,11 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
-import static com.example.demo.config.BaseResponseStatus.*;
-import static com.example.demo.utils.ValidationRegex.*;
+import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/address")
 public class AddressController {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -33,7 +32,24 @@ public class AddressController {
         this.addressService = addressService;
         this.jwtService = jwtService;
     }
-    
+
+    /**
+     * 검색을 통해 동네 조회
+     * [GET] /address?search={search}
+     * @return BaseResponse<GetAddressRes>
+     * 토큰 필요함 -> 토큰의 유저정보를 통해 승인된 주소 정보가 있는지 확인해야함
+     */
+    @ResponseBody
+    @GetMapping("")
+    public BaseResponse<List<GetTownRes>> get(@RequestParam("search") String search) {
+        try{
+            List<GetTownRes> getTownRes = addressProvider.getTown(search);
+            return new BaseResponse<>(getTownRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
 
 
 }
