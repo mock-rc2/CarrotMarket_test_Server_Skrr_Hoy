@@ -45,6 +45,16 @@ public class UserDao {
 
     }
 
+    //유저 인증번호 일치 여부 조회 쿼리
+    public int checkCertificationNum(PostLoginReq postLoginReq){
+        String checkCertificationNumQuery = "select exists(select phoneNumber from User where phoneNumber = ? && certificationNum= ?)";
+        Object[] checkCertificationNumParams = new Object[]{postLoginReq.getPhoneNumber(), postLoginReq.getCertificationNum()};
+        return this.jdbcTemplate.queryForObject(checkCertificationNumQuery,
+                int.class,
+                checkCertificationNumParams);
+
+    }
+
 
     public int getTownId(PostUserReq postUserReq){
         String getTownIdQuery = "select townId from Town where townName = ?";

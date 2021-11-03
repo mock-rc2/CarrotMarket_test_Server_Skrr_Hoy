@@ -54,4 +54,13 @@ public class UserProvider {
         }
     }
 
+    //인증번호 일치 여부 체크
+    public int checkCertificationNum(PostLoginReq postLoginReq) throws BaseException{
+        try{
+            return userDao.checkCertificationNum(postLoginReq);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

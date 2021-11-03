@@ -11,4 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PostLoginReq {
     private String phoneNumber;
+    private String certificationNum;
 }

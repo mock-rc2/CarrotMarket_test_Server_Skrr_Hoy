@@ -91,11 +91,21 @@ public class UserController {
             if(!isRegexPhone(postLoginReq.getPhoneNumber())){
                 return new BaseResponse<>(POST_USERS_INVALID_PHONE);
             }
+            //인증번호 입력 체크
+            if(postLoginReq.getCertificationNum() == null){
+                return new BaseResponse<>(POST_USERS_EMPTY_CERTIFICATIONNUM);
+            }
             //정상 상태 유저인지 체크
             //정상 상태가 아니라면 -> 회원가입으로 유도
             int checkStatus = userProvider.checkStatus(postLoginReq.getPhoneNumber());
             if(checkStatus == 0){//정상 상태가 아닌 유저라면
                 return new BaseResponse<>(POST_USERS_INVALID_USER);
+            }
+
+            //인증번호가 일치하는지 체크
+            int checkCertificationNum = userProvider.checkCertificationNum(postLoginReq);
+            if(checkCertificationNum == 0){//정상 상태가 아닌 유저라면
+                return new BaseResponse<>(POST_USERS_INVALID_CERTIFICATIONNUM);
             }
 
             PostLoginRes postLoginRes = userProvider.logIn(postLoginReq);
