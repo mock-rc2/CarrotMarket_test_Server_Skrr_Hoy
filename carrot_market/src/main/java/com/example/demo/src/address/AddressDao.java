@@ -80,14 +80,6 @@ public class AddressDao {
                 search,search,search,search);
     }
 
-
-    public int getTownIdByUserId(int userId) {
-        String getTownIdQuery = "select townId from Address where userId = ? and selectAddress = 'Valid'";
-        return this.jdbcTemplate.queryForObject(getTownIdQuery,
-                int.class,
-                userId);
-    }
-
     public GetLocation getLocation(int townId){
         String getLocationIdQuery = "select lat, lng from Town where townId = ? ";
         return this.jdbcTemplate.queryForObject(getLocationIdQuery,
@@ -97,29 +89,6 @@ public class AddressDao {
                 ),
                 townId);
     }
-
-    public String isCertifiedAddress(int userId, int townId){
-        String getIsCertifiedAddressQuery = "select certification from Address where userId = ? and townId = ?";
-        return this.jdbcTemplate.queryForObject(getIsCertifiedAddressQuery,
-                String.class,
-                userId, townId);
-    }
-
-
-    public int getTownExist(GetTownReq getTownReq){
-        String getTownExistQuery = "select exists(select townId from Town where city = ? and district = ? and townName = ?)";
-        return this.jdbcTemplate.queryForObject(getTownExistQuery,
-                int.class,
-                getTownReq.getCity(), getTownReq.getDistrict(), getTownReq.getTownName());
-    }
-
-    public int getTownIdByGetTownReq(GetTownReq getTownReq){
-        String getTownIdQuery = "select townId from Town where city = ? and district = ? and townName = ?";
-        return this.jdbcTemplate.queryForObject(getTownIdQuery,
-                int.class,
-                getTownReq.getCity(), getTownReq.getDistrict(), getTownReq.getTownName());
-    }
-
 
     public List<GetTownRes> getNearTownOrderByName(Double lat, Double lng){
         String getNearTownOrderByName = "select T.townId,city,\n" +
@@ -147,6 +116,5 @@ public class AddressDao {
                 ),
                 lat,lng,lat);
     }
-
 
 }
