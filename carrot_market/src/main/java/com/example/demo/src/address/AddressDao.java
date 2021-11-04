@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -123,5 +124,22 @@ public class AddressDao {
                 int.class,
                 city, district, townName
         );
+    }
+
+
+    public ArrayList<Integer> getNearTownListByRange(int range, Double lat, Double lng){
+        String getNearTownIdQuery = "SELECT townId\n" +
+                "FROM Town\n" +
+                "where ((6371 * acos(cos(radians(?)) * cos(radians(lat)) *\n" +
+                "                   cos(radians(lng) - radians(?)) +\n" +
+                "                   sin(radians(?)) * sin(radians(lat)))) < ?)";
+
+        ArrayList<Integer> list = new ArrayList<>();
+
+        this.jdbcTemplate.query(getNearTownIdQuery,
+                (rs, rowNum) -> list.add(rs.getInt("townId")),
+                lat,lng,lat, range);
+        return list;
+
     }
 }
