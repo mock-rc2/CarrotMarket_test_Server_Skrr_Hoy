@@ -52,7 +52,7 @@ public class AddressController {
     }
 
     /**
-     * 현재 위치를 통해 동네 조회
+     * 현재 위치를 통해 주변 동네 조회
      * [GET] /address/location?townId={townId}
      * @return BaseResponse<List<GetTownRes>>
      */
@@ -66,6 +66,23 @@ public class AddressController {
             return new BaseResponse<>((exception.getStatus()));
         }
 
+    }
+
+    /**
+     * 현재 위치한 동네에 해당하는 동네id 조회
+     * [GET] /address/townId?city={city}&district={district}&townName={townName}
+     * @return BaseResponse<List<GetTownRes>>
+     */
+    @ResponseBody
+    @GetMapping("/townId")
+    public BaseResponse<Integer> getTownIdByCurrentLocation(@RequestParam("city") String city, @RequestParam("district") String district, @RequestParam("townName") String townName) throws BaseException {
+
+        try{
+            int townId = addressProvider.getTownId(city, district, townName);
+            return new BaseResponse<>(townId);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
     }
 
 }

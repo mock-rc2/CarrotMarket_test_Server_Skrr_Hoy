@@ -72,7 +72,16 @@ public class AddressProvider {
             throw new BaseException(DATABASE_ERROR);
         }
 
-
+    }
+    public int getTownId(String city, String district,String townName) throws BaseException {
+        //1. 현재 위치의 townId 반환
+        int townId;
+        try {
+            townId = addressDao.getTownId(city, district, townName);
+            return townId;
+        }catch(Exception exception){
+            throw new BaseException(GET_TOWN_EXIST_ERROR);
+        }
     }
 
 }
