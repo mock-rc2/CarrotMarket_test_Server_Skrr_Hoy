@@ -30,24 +30,18 @@ public class AddressProvider {
     }
 
 
-    public List<GetTownRes> getTownBySearch(String search) throws BaseException {
+    public List<GetTownRes> getTownBySearch(String search, GetTownSearchReq getTownSearch) throws BaseException {
 
-
-        // 1. 토큰을 이용해 유저가 현재 선택하고 있는 동네id를 가져온다.
-        // 2. 승인된 동네인지 확인한다.
-        // 3. 승인된 주소라면 getTownOrderByAddress() 실행
-        // 4. 승인되지 않은 주소라면 getTownOrderByName() 실행
-            // 1
-            int userIdByJwt = jwtService.getUserId();
-            int townId = addressDao.getTownIdByUserId(userIdByJwt);
+        // 1. 승인된 주소라면 getTownOrderByAddress() 실행
+        // 2. 승인되지 않은 주소라면 getTownOrderByName() 실행
 
         List<GetTownRes> getTownRes;
         GetLocation getLoc;
         try {
 
             //2 승인된 동네인지 확인
-            if(addressDao.isCertifiedAddress(userIdByJwt, townId).equals("Valid")){
-                getLoc = addressDao.getLocation(townId);
+            if(getTownSearch.getCertification().equals("Valid")){
+                getLoc = addressDao.getLocation(getTownSearch.getTownId());
                 getTownRes = addressDao.getTownOrderByAddress(search, getLoc.getLat(),getLoc.getLng());
             }
             //3 승인되지 않은 동네일 때
@@ -64,17 +58,10 @@ public class AddressProvider {
 
 
 
-    public List<GetTownRes> getTownByLocation(GetTownReq getTownReq) throws BaseException {
-        // 1. 입력된 동네 정보가 존재하는 지 확인
-        if(addressDao.getTownExist(getTownReq) == 0){
-            throw new BaseException(GET_TOWN_EXIST_ERROR);
-        }
+    public List<GetTownRes> getTownByLocation(GetTownSearchReq getTownSearchByLocationReq) throws BaseException {
 
-        // 2. 입력된 동네 정보의 townId 와 lat, lng 찾기
-        int townId = addressDao.getTownIdByGetTownReq(getTownReq);
-        GetLocation getLoc = addressDao.getLocation(townId);
-
-
+        // 1. 입력된 townId를 이용하여 lat, lng 찾기
+        GetLocation getLoc = addressDao.getLocation(getTownSearchByLocationReq.getTownId());
 
         // 3. 현재 동네에서 가까운 순서대로 정렬한 리스트를 반환
         List<GetTownRes> getTownRes;
