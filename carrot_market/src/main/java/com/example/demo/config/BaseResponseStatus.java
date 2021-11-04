@@ -47,8 +47,10 @@ public enum BaseResponseStatus {
     POST_POST_INVALID_USER(false, 2023, "조회할 수 없는 유저입니다."),
 
 
-    //[GET] /address/location
+    //[GET] /address/townId?city={city}&district={district}&townName={townName}
     GET_TOWN_EXIST_ERROR(false, 2030, "존재하지 않는 동네입니다."),
+
+
 
     /**
      * 3000 : Response 오류

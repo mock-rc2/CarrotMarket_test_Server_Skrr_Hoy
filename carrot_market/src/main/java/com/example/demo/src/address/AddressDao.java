@@ -81,8 +81,8 @@ public class AddressDao {
     }
 
     public GetLocation getLocation(int townId){
-        String getLocationIdQuery = "select lat, lng from Town where townId = ? ";
-        return this.jdbcTemplate.queryForObject(getLocationIdQuery,
+        String getLocationQuery = "select lat, lng from Town where townId = ? ";
+        return this.jdbcTemplate.queryForObject(getLocationQuery,
                 (rs, rowNum) -> new GetLocation(
                         rs.getDouble("lat"),
                         rs.getDouble("lng")
@@ -117,4 +117,11 @@ public class AddressDao {
                 lat,lng,lat);
     }
 
+    public int getTownId(String city,String district,String townName){
+        String gettownIdQuery = "select townId from Town where city = ? and district = ? and townName = ? ";
+        return this.jdbcTemplate.queryForObject(gettownIdQuery,
+                int.class,
+                city, district, townName
+        );
+    }
 }
