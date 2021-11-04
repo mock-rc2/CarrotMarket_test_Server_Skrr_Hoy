@@ -27,7 +27,7 @@ public enum BaseResponseStatus {
     POST_USERS_EMPTY_ADDRESS(false, 2011, "주소를 입력해주세요."),
     POST_USERS_EMPTY_PHONENUMBER(false, 2012, "전화번호를 입력해주세요."),
     POST_USERS_EMPTY_NICKNAME(false, 2013, "별명을 입력해주세요."),
-    POST_USERS_DUPLICATE_PHONENUMBER(false, 2014, "별명을 입력해주세요."),
+    POST_USERS_DUPLICATE_PHONENUMBER(false, 2014, "중복된 전화번호 입니다."),
 
 
     // [POST] /users
@@ -45,6 +45,13 @@ public enum BaseResponseStatus {
 
     //[POST] /post/:userId
     POST_POST_INVALID_USER(false, 2023, "조회할 수 없는 유저입니다."),
+
+    //[POST] /post/title-image
+    POST_POST_INVALID_POST(false, 2024, "조회할 수 없는 게시물 입니다."),
+
+
+    //[GET] /address/location
+    GET_TOWN_EXIST_ERROR(false, 2030, "존재하지 않는 동네입니다."),
 
     /**
      * 3000 : Response 오류

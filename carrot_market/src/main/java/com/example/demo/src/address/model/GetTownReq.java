@@ -1,17 +1,17 @@
-package com.example.demo.src.user.model;
+package com.example.demo.src.address.model;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @AllArgsConstructor
-public class PostUserReq {
+public class GetTownReq {
+
     private String city;
     private String district;
     private String townName;
-    private String phoneNumber;
-    private String nickName;
-    private String image;
 }
