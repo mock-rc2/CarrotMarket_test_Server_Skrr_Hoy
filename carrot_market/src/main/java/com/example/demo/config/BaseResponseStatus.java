@@ -46,11 +46,20 @@ public enum BaseResponseStatus {
     //[POST] /post/:userId
     POST_POST_INVALID_USER(false, 2023, "조회할 수 없는 유저입니다."),
 
+<<<<<<< HEAD
 
     //[GET] /address/townId?city={city}&district={district}&townName={townName}
     GET_TOWN_EXIST_ERROR(false, 2030, "존재하지 않는 동네입니다."),
 
 
+=======
+    //[POST] /post/title-image
+    POST_POST_INVALID_POST(false, 2024, "조회할 수 없는 게시물 입니다."),
+
+
+    //[GET] /address/location
+    GET_TOWN_EXIST_ERROR(false, 2030, "존재하지 않는 동네입니다."),
+>>>>>>> hoy_branch
 
     /**
      * 3000 : Response 오류

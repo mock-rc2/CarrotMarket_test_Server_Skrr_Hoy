@@ -8,7 +8,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+<<<<<<< HEAD
 import java.util.ArrayList;
+=======
+>>>>>>> hoy_branch
 import java.util.List;
 
 @Repository
@@ -81,9 +84,23 @@ public class AddressDao {
                 search,search,search,search);
     }
 
+<<<<<<< HEAD
     public GetLocation getLocation(int townId){
         String getLocationQuery = "select lat, lng from Town where townId = ? ";
         return this.jdbcTemplate.queryForObject(getLocationQuery,
+=======
+
+    public int getTownIdByUserId(int userId) {
+        String getTownIdQuery = "select townId from Address where userId = ? and selectAddress = 'Valid'";
+        return this.jdbcTemplate.queryForObject(getTownIdQuery,
+                int.class,
+                userId);
+    }
+
+    public GetLocation getLocation(int townId){
+        String getLocationIdQuery = "select lat, lng from Town where townId = ? ";
+        return this.jdbcTemplate.queryForObject(getLocationIdQuery,
+>>>>>>> hoy_branch
                 (rs, rowNum) -> new GetLocation(
                         rs.getDouble("lat"),
                         rs.getDouble("lng")
@@ -91,6 +108,32 @@ public class AddressDao {
                 townId);
     }
 
+<<<<<<< HEAD
+=======
+    public String isCertifiedAddress(int userId, int townId){
+        String getIsCertifiedAddressQuery = "select certification from Address where userId = ? and townId = ?";
+        return this.jdbcTemplate.queryForObject(getIsCertifiedAddressQuery,
+                String.class,
+                userId, townId);
+    }
+
+
+    public int getTownExist(GetTownReq getTownReq){
+        String getTownExistQuery = "select exists(select townId from Town where city = ? and district = ? and townName = ?)";
+        return this.jdbcTemplate.queryForObject(getTownExistQuery,
+                int.class,
+                getTownReq.getCity(), getTownReq.getDistrict(), getTownReq.getTownName());
+    }
+
+    public int getTownIdByGetTownReq(GetTownReq getTownReq){
+        String getTownIdQuery = "select townId from Town where city = ? and district = ? and townName = ?";
+        return this.jdbcTemplate.queryForObject(getTownIdQuery,
+                int.class,
+                getTownReq.getCity(), getTownReq.getDistrict(), getTownReq.getTownName());
+    }
+
+
+>>>>>>> hoy_branch
     public List<GetTownRes> getNearTownOrderByName(Double lat, Double lng){
         String getNearTownOrderByName = "select T.townId,city,\n" +
                 "       district,\n" +
@@ -118,6 +161,7 @@ public class AddressDao {
                 lat,lng,lat);
     }
 
+<<<<<<< HEAD
     public int getTownId(String city,String district,String townName){
         String gettownIdQuery = "select townId from Town where city = ? and district = ? and townName = ? ";
         return this.jdbcTemplate.queryForObject(gettownIdQuery,
@@ -142,4 +186,7 @@ public class AddressDao {
         return list;
 
     }
+=======
+
+>>>>>>> hoy_branch
 }

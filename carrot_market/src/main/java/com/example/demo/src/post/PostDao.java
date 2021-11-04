@@ -49,6 +49,16 @@ public class PostDao {
 
     }
 
+    //게시물 아이디로 게시물 존재하는지
+    public int checkPostId(int postId){
+        String checkPostIdQuery = "select exists(select * from Post where postId = ? && status != 'Delete')";
+        int checkPostIdParams = postId;
+        return this.jdbcTemplate.queryForObject(checkPostIdQuery,
+                int.class,
+                checkPostIdParams);
+
+    }
+
     //특정 유저 판매중 게시물 조회
     public List<AllPostSelectRes> salePostSelect(int userId){
         String getsalePostSelectQuery = "select postId, townId, title, categoryId, cost, content, status\n" +
@@ -88,6 +98,26 @@ public class PostDao {
         );
     }
 
+    //특정 유저 판매중 게시물 조회
+    public List<AllPostSelectRes> hidePostSelect(int userId){
+        String gethidePostSelectQuery = "select postId, townId, title, categoryId, cost, content, status\n" +
+                "from Post\n" +
+                "where userId = ? && status = 'Hide'\n" +
+                "ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
+        return this.jdbcTemplate.query(gethidePostSelectQuery,
+                (rs,rowNum) -> new AllPostSelectRes(
+                        rs.getInt("postId"),
+                        rs.getInt("townId"),
+                        rs.getString("title"),
+                        rs.getInt("categoryId"),
+                        rs.getInt("cost"),
+                        rs.getString("content"),
+                        rs.getString("status")),
+                userId
+        );
+    }
+
+    //특정 유저 구매완료 게시물 조회
     public List<AllPostSelectRes> purchaseCompletePostSelect(int buyerUserId){
         String getpurchaseCompletePostSelectQuery = "select P.postId, P.townId, P.title, P.categoryId, P.cost, P.content, P.status\n" +
                 "from Post P\n" +
@@ -104,6 +134,33 @@ public class PostDao {
                         rs.getString("content"),
                         rs.getString("status")),
                 buyerUserId
+        );
+    }
+    //특정 게시물 대표 이미지 조회
+    public GetPostImage getPostTitleImage(int postId){
+        String getgetPostTitleImageQuery = "select postImageId, image\n" +
+                "from PostImage\n" +
+                "where postId = 13 && status = 'Valid'\n" +
+                "order by postImageId asc,created asc limit 1;";    //디비에 이 쿼리를 날린다.
+        return this.jdbcTemplate.queryForObject(getgetPostTitleImageQuery,
+                (rs,rowNum) -> new GetPostImage(
+                        rs.getInt("postImageId"),
+                        rs.getString("image")),
+                postId
+        );
+    }
+
+    //특정 게시물 전체 이미지 조회
+    public List<GetPostImage> getPostAllImage(int postId){
+        String getPostAllImageQuery = "select postImageId, image\n" +
+                "from PostImage\n" +
+                "where postId = ? && status = 'Valid'\n" +
+                "order by postImageId asc,created asc";    //디비에 이 쿼리를 날린다.
+        return this.jdbcTemplate.query(getPostAllImageQuery,
+                (rs,rowNum) -> new GetPostImage(
+                        rs.getInt("postImageId"),
+                        rs.getString("image")),
+                postId
         );
     }
 
