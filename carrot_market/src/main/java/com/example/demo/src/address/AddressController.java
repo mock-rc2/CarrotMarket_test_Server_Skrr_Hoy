@@ -41,9 +41,9 @@ public class AddressController {
      */
     @ResponseBody
     @GetMapping("")
-    public BaseResponse<List<GetTownRes>> getTownSearchBySearch(@RequestParam("search") String search) {
+    public BaseResponse<List<GetTownRes>> getTownSearchBySearch(@RequestParam("search") String search, @RequestBody GetTownSearchReq getTownSearch) {
         try{
-            List<GetTownRes> getTownRes = addressProvider.getTownBySearch(search);
+            List<GetTownRes> getTownRes = addressProvider.getTownBySearch(search, getTownSearch);
             return new BaseResponse<>(getTownRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
@@ -58,9 +58,9 @@ public class AddressController {
      */
     @ResponseBody
     @GetMapping("/location")
-    public BaseResponse<List<GetTownRes>> getTownSearchByLocation(@RequestBody GetTownReq getTownReq) {
+    public BaseResponse<List<GetTownRes>> getTownSearchByLocation(@RequestBody GetTownSearchReq getTownSearchByLocationReq) {
         try{
-            List<GetTownRes> getTownRes = addressProvider.getTownByLocation(getTownReq);
+            List<GetTownRes> getTownRes = addressProvider.getTownByLocation(getTownSearchByLocationReq);
             return new BaseResponse<>(getTownRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
