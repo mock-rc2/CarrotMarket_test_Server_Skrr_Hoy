@@ -35,15 +35,15 @@ public class AddressController {
 
     /**
      * 검색을 통해 동네 조회
-     * [GET] /address?search={search}
+     * [GET] /address?search={search}&townId={townId}
      * @return BaseResponse<List<GetTownRes>>
      * 토큰 필요함 -> 토큰의 유저정보를 통해 승인된 주소 정보가 있는지 확인해야함
      */
     @ResponseBody
     @GetMapping("")
-    public BaseResponse<List<GetTownRes>> getTownSearchBySearch(@RequestParam("search") String search, @RequestBody GetTownSearchReq getTownSearch) {
+    public BaseResponse<List<GetTownRes>> getTownSearchBySearch(@RequestParam("search") String search, @RequestParam("townId") int townId ) {
         try{
-            List<GetTownRes> getTownRes = addressProvider.getTownBySearch(search, getTownSearch);
+            List<GetTownRes> getTownRes = addressProvider.getTownBySearch(search, townId);
             return new BaseResponse<>(getTownRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
@@ -53,14 +53,14 @@ public class AddressController {
 
     /**
      * 현재 위치를 통해 동네 조회
-     * [GET] /address/location
+     * [GET] /address/location?townId={townId}
      * @return BaseResponse<List<GetTownRes>>
      */
     @ResponseBody
     @GetMapping("/location")
-    public BaseResponse<List<GetTownRes>> getTownSearchByLocation(@RequestBody GetTownSearchReq getTownSearchByLocationReq) {
+    public BaseResponse<List<GetTownRes>> getTownSearchByLocation(@RequestParam("townId") int townId) {
         try{
-            List<GetTownRes> getTownRes = addressProvider.getTownByLocation(getTownSearchByLocationReq);
+            List<GetTownRes> getTownRes = addressProvider.getTownByLocation(townId);
             return new BaseResponse<>(getTownRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));

@@ -30,21 +30,21 @@ public class AddressProvider {
     }
 
 
-    public List<GetTownRes> getTownBySearch(String search, GetTownSearchReq getTownSearch) throws BaseException {
+    public List<GetTownRes> getTownBySearch(String search, int townId) throws BaseException {
 
-        // 1. 승인된 주소라면 getTownOrderByAddress() 실행
-        // 2. 승인되지 않은 주소라면 getTownOrderByName() 실행
+        // 1. townId가 존재한다면 getTownOrderByAddress() 실행
+        // 2. townId가 존재하지 않는다면 getTownOrderByName() 실행
 
         List<GetTownRes> getTownRes;
         GetLocation getLoc;
         try {
 
-            //2 승인된 동네인지 확인
-            if(getTownSearch.getCertification().equals("Valid")){
-                getLoc = addressDao.getLocation(getTownSearch.getTownId());
+            //1. townId가 존재한다면
+            if(townId != -1){
+                getLoc = addressDao.getLocation(townId);
                 getTownRes = addressDao.getTownOrderByAddress(search, getLoc.getLat(),getLoc.getLng());
             }
-            //3 승인되지 않은 동네일 때
+            //2 townId가 존재하지 않는다면
             else{
                 getTownRes = addressDao.getTownOrderByName(search);
             }
@@ -58,10 +58,10 @@ public class AddressProvider {
 
 
 
-    public List<GetTownRes> getTownByLocation(GetTownSearchReq getTownSearchByLocationReq) throws BaseException {
+    public List<GetTownRes> getTownByLocation(int townId) throws BaseException {
 
         // 1. 입력된 townId를 이용하여 lat, lng 찾기
-        GetLocation getLoc = addressDao.getLocation(getTownSearchByLocationReq.getTownId());
+        GetLocation getLoc = addressDao.getLocation(townId);
 
         // 3. 현재 동네에서 가까운 순서대로 정렬한 리스트를 반환
         List<GetTownRes> getTownRes;
