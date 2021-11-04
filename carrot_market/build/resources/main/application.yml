@@ -1,0 +1,14 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: demo
+
+  datasource:
+    platform: mysql
+    url: jdbc:mysql://skrrdb.cskwshv6nsnx.ap-northeast-2.rds.amazonaws.com/carrotMarket?autoReconnect=true
+    username:  skrr
+    password:  qwert12345
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # driver-class-name: com.mysql.jdbc.Driver
