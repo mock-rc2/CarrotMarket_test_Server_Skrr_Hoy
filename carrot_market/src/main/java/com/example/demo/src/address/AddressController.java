@@ -85,4 +85,23 @@ public class AddressController {
         }
     }
 
+
+    /**
+     * 특정 동네의 range 별 근처 동네 리스트 반환
+     * [GET] /address/near?townId={townId}
+     * @return BaseResponse<List<GetTownRes>>
+     */
+    @ResponseBody
+    @GetMapping("/near")
+    public BaseResponse<GetNearTownListRes> getNearTownLiST(@RequestParam("townId") int townId) throws BaseException {
+        try{
+            GetNearTownListRes getNearTownListRes  = addressProvider.getNearTownList(townId);
+            return new BaseResponse<>(getNearTownListRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+
+
 }

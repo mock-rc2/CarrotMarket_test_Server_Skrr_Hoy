@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
@@ -84,4 +85,43 @@ public class AddressProvider {
         }
     }
 
+    public GetNearTownListRes getNearTownList(int townId) throws BaseException {
+        // 1. townId의 lat와 lng를 구한다.
+        // 2. townId가 서울에 속하면 r1, r2, r3,r4 는 각각 1,2,3,4 km의 영역
+        //    서울이 아니면 r1,r2,r3,r4는 각각 2,5,8,10km의 영역
+        // 3. range별 townId List 만들기
+        // 4. getNearTownListRes에 넣고 반환
+        GetLocation getLoc;
+
+        ArrayList<Integer> r1;
+        ArrayList<Integer> r2;
+        ArrayList<Integer> r3;
+        ArrayList<Integer> r4;
+        if ((1 <= townId && townId <= 424) || (3547 <= townId && townId <= 3928)) {
+            try {
+                getLoc = addressDao.getLocation(townId);
+                r1 = addressDao.getNearTownListByRange(1, getLoc.getLat(),getLoc.getLng());
+                r2 = addressDao.getNearTownListByRange(2, getLoc.getLat(),getLoc.getLng() );
+                r3 = addressDao.getNearTownListByRange(3, getLoc.getLat(),getLoc.getLng());
+                r4 = addressDao.getNearTownListByRange(4, getLoc.getLat(),getLoc.getLng());
+
+            } catch (Exception exception) {
+                throw new BaseException(DATABASE_ERROR);
+            }
+        } else {
+
+            try {
+                getLoc = addressDao.getLocation(townId);
+                r1 = addressDao.getNearTownListByRange(2, getLoc.getLat(),getLoc.getLng());
+                r2 = addressDao.getNearTownListByRange(4, getLoc.getLat(),getLoc.getLng());
+                r3 = addressDao.getNearTownListByRange(6, getLoc.getLat(),getLoc.getLng());
+                r4 = addressDao.getNearTownListByRange(8, getLoc.getLat(),getLoc.getLng());
+
+            } catch (Exception exception) {
+                throw new BaseException(DATABASE_ERROR);
+            }
+        }
+        GetNearTownListRes getNearTownListRes = new GetNearTownListRes(r1,r2,r3,r4);
+        return getNearTownListRes;
+    }
 }
