@@ -77,13 +77,14 @@ public class AddressService {
     }
 
     public void patchAddress(int userId,int townId) throws BaseException {
+
         // 1. address에 userId 와 townId가 존재하는 행이 Valid 상태인지 확인 (현재 선택된 동네인지 확인)
         // 2. 1이 확인된다면 status = inValid, selectAddress = Invalid 상태로 바꾸기
 
 
         //1. 현재 선택된 상태의 동네인지 확인
         if (addressDao.isSelectedTown(userId,townId) == 0) {
-            throw new BaseException(INVALID_ADDRESS_ERROR);
+            throw new BaseException(PATCH_ADDRESS_EXIST_ERROR);
         }
 
         //2. status = Invalid, selectAddress =Invalid 로 수정
@@ -106,5 +107,49 @@ public class AddressService {
         }catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
+    }
+
+
+
+    public void postChangeAddress(int userId,int townId) throws BaseException{
+        // 1. 현재 유저가 선택한 동네가 2개인지 확인
+        // 2. 현재 유저가 townId를 선택하고 있는지 확인
+        // 3. 현재 선택한 동네의 selectAddress = Invalid 로 변경
+        // 4. townId가 해당되는 adrress 행의 selectAddress = Valid 로 변경
+
+
+        // 1. 현재 유저가 선택한 동네의 개수
+        int stateValidTown = addressDao.countUserAddress(userId);
+        if (stateValidTown != 2) {
+            throw new BaseException(POST_ADDRESS_CHANGE_ERROR);
+        }
+
+        //2. 현재 유저가 townId를 선택하고 있는지 확인
+       if (addressDao.isSelectedTown(userId,townId) == 0) {
+            throw new BaseException(POST_ADDRESS_EXIST_ERROR);
+       }
+
+
+        try{
+            //3. 현재 선택하고 있는 동네에 selectAddress = Invalid로 바꾸기
+            addressDao.patchSelectAddress(userId);
+
+            //4-1. addressId 찾기
+            int addressId = addressDao.getAddressId(userId, townId);
+
+           //4-2. addressId에 해당하는 selectAddress = Valid로 바꾸기
+            addressDao.patchAddressStatusValid(addressId);
+
+
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+
+
+
+
+
+
     }
 }

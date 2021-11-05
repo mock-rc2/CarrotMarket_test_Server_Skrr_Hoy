@@ -140,8 +140,10 @@ public class AddressController {
     @PatchMapping("/{townId}")
     public BaseResponse<String> PatchAddress(@PathVariable("townId") int townId){
 
+
         int userIdByJwt;
         try {
+
             userIdByJwt = jwtService.getUserId();
 
             addressService.patchAddress(userIdByJwt, townId);
@@ -153,4 +155,27 @@ public class AddressController {
         }
     }
 
+    /**
+     * 내 동네 바꾸기
+     * [Patch] /address/change/:townId
+     * @return BaseResponse<String>
+     */
+
+    @ResponseBody
+    @PatchMapping("/change/{townId}")
+    public BaseResponse<String> PostChangeAddress(@PathVariable("townId") int townId){
+
+        int userIdByJwt;
+        try {
+            userIdByJwt = jwtService.getUserId();
+
+            addressService.postChangeAddress(userIdByJwt, townId);
+
+            String result = "동네가 변경되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+    
 }
