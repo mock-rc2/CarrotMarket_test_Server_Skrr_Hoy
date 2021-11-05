@@ -33,10 +33,10 @@ public class WishListService {
     //관심 목록 추가
     public PostWishListRes createWishList(PostWishListReq postWishListReq) throws BaseException {
         //유저가 본인인지 확인
-        int userId = jwtService.getUserId();
+        /*int userId = jwtService.getUserId();
         if(userId != postWishListReq.getUserId()) {
             throw new BaseException(POST_POST_INVALID_USER);
-        }
+        }*/
         //유저가 정상인지 확인
         int checkUserId = wishListDao.checkUserId(postWishListReq.getUserId());
         if(checkUserId == 0){//정상 상태가 아닌 유저라면
