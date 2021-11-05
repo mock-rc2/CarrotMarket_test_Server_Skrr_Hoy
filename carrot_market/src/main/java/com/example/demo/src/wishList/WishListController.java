@@ -1,7 +1,6 @@
 package com.example.demo.src.wishList;
 
-import com.example.demo.src.post.model.AllPostSelectRes;
-import com.example.demo.src.user.model.PostLoginReq;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.demo.config.BaseException;
@@ -13,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
+
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("/wish-list")
@@ -75,6 +76,29 @@ public class WishListController {
             return new BaseResponse<>((exception.getStatus()));
         }
 
+    }
+
+    @ResponseBody
+    @PatchMapping("/status/{wishListId}")
+    public BaseResponse<String> modifyWishListStatus(@PathVariable("wishListId") int wishListId, @RequestBody WishList wishList){
+        try {
+            //jwt에서 idx 추출.
+            int userId = jwtService.getUserId();
+
+            if(wishList.getStatus().equals("Invalid")){
+                PatchWishListStatus patchWishListStatus = new PatchWishListStatus(userId,wishListId,wishList.getStatus());
+                wishListService.modifyWishListStatus(patchWishListStatus);
+
+                String result = "";
+                return new BaseResponse<>(result);
+            }
+            else{
+                return new BaseResponse<>(PATCH_WISHLIST_INVALID_STATUS);
+            }
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
     }
 
 

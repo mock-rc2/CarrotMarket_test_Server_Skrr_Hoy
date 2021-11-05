@@ -1,7 +1,6 @@
 package com.example.demo.src.wishList;
 
 
-import com.example.demo.src.user.model.PostUserReq;
 import com.example.demo.src.wishList.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,12 +21,13 @@ public class WishListDao {
 
     //특정유저 전체 판매중, 판매완료 게시물 조회
     public List<WishListSelectRes> wishListSelect(int userId){
-        String getWishListSelectResQuery = "select P.postId, P.townId, P.title, P.categoryId, P.cost, P.content, P.status\n" +
+        String getWishListSelectResQuery = "select W.wishListId, P.postId, P.townId, P.title, P.categoryId, P.cost, P.content, P.status\n" +
                 "from WishList W\n" +
                 "left join Post P on P.postId = W.postId\n" +
                 "where W.userId = ? && W.status = 'Valid' && (P.status = 'Valid' || P.status = 'Invalid');";    //디비에 이 쿼리를 날린다.
         return this.jdbcTemplate.query(getWishListSelectResQuery,
                 (rs,rowNum) -> new WishListSelectRes(
+                        rs.getInt("wishListId"),
                         rs.getInt("postId"),
                         rs.getInt("townId"),
                         rs.getString("title"),
@@ -78,115 +78,31 @@ public class WishListDao {
         return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
     }
 
-    /*
+    //상태 수정
+    public int modifyWishListStatus(PatchWishListStatus patchWishListStatus){
+        String modifyUserStatusQuery = "update WishList set status = ? where wishListId = ? ";
+        Object[] modifyUserStatusParams = new Object[]{patchWishListStatus.getStatus(), patchWishListStatus.getWishListId()};
 
-
-    //특정 유저 판매중 게시물 조회
-    public List<AllWishListSelectRes> saleWishListSelect(int userId){
-        String getsaleWishListSelectQuery = "select postId, townId, title, categoryId, cost, content, status\n" +
-                "from Post\n" +
-                "where userId = ? && status = 'Valid'\n" +
-                "ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
-        return this.jdbcTemplate.query(getsaleWishListSelectQuery,
-                (rs,rowNum) -> new AllWishListSelectRes(
-                        rs.getInt("postId"),
-                        rs.getInt("townId"),
-                        rs.getString("title"),
-                        rs.getInt("categoryId"),
-                        rs.getInt("cost"),
-                        rs.getString("content"),
-                        rs.getString("status")),
-                userId
-        );
+        return this.jdbcTemplate.update(modifyUserStatusQuery,modifyUserStatusParams);
     }
+    //상태조회
+    public int checkStatus(int wishListId){
+        String checkWishListQuery = "select exists(select * from WishList where wishListId = ? && status='Valid')";
+        int checkWishListParams = wishListId;
+        return this.jdbcTemplate.queryForObject(checkWishListQuery,
+                int.class,
+                checkWishListParams);
 
-    //특정 유저 판매완료 게시물 조회
-    public List<AllWishListSelectRes> dealCompleteWishListSelect(int sellerUserId){
-        String getdealCompleteWishListSelectQuery = "select P.postId, P.townId, P.title, P.categoryId, P.cost, P.content, P.status\n" +
-                "from Post P\n" +
-                "left join DealComplete DC on P.userId = DC.sellerUserId && P.postId = DC.postId\n" +
-                "where P.userId = ? && (P.status = 'Invalid' && DC.status = 'Valid')\n" +
-                "ORDER BY P.created DESC;";    //디비에 이 쿼리를 날린다.
-        return this.jdbcTemplate.query(getdealCompleteWishListSelectQuery,
-                (rs,rowNum) -> new AllWishListSelectRes(
-                        rs.getInt("postId"),
-                        rs.getInt("townId"),
-                        rs.getString("title"),
-                        rs.getInt("categoryId"),
-                        rs.getInt("cost"),
-                        rs.getString("content"),
-                        rs.getString("status")),
-                sellerUserId
-        );
     }
+    //유저의 관심목록이 맞는지 체크
+    public int checkUserWish(PatchWishListStatus patchWishListStatus){
+        String checkUserWishQuery = "select exists(select * from WishList where userId = ? && wishListId = ?)";
+        Object[] checkUserWishParams = new Object[]{patchWishListStatus.getUserId(), patchWishListStatus.getWishListId()};
+        return this.jdbcTemplate.queryForObject(checkUserWishQuery,
+                int.class,
+                checkUserWishParams);
 
-    //특정 유저 판매중 게시물 조회
-    public List<AllWishListSelectRes> hideWishListSelect(int userId){
-        String gethideWishListSelectQuery = "select postId, townId, title, categoryId, cost, content, status\n" +
-                "from Post\n" +
-                "where userId = ? && status = 'Hide'\n" +
-                "ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
-        return this.jdbcTemplate.query(gethideWishListSelectQuery,
-                (rs,rowNum) -> new AllWishListSelectRes(
-                        rs.getInt("postId"),
-                        rs.getInt("townId"),
-                        rs.getString("title"),
-                        rs.getInt("categoryId"),
-                        rs.getInt("cost"),
-                        rs.getString("content"),
-                        rs.getString("status")),
-                userId
-        );
     }
-
-    //특정 유저 구매완료 게시물 조회
-    public List<AllWishListSelectRes> purchaseCompleteWishListSelect(int buyerUserId){
-        String getpurchaseCompleteWishListSelectQuery = "select P.postId, P.townId, P.title, P.categoryId, P.cost, P.content, P.status\n" +
-                "from Post P\n" +
-                "left join DealComplete DC on P.postId = DC.postId\n" +
-                "where DC.buyerUserId = ? && (P.status = 'Invalid' && DC.status = 'Valid')\n" +
-                "ORDER BY P.created DESC;";    //디비에 이 쿼리를 날린다.
-        return this.jdbcTemplate.query(getpurchaseCompleteWishListSelectQuery,
-                (rs,rowNum) -> new AllWishListSelectRes(
-                        rs.getInt("postId"),
-                        rs.getInt("townId"),
-                        rs.getString("title"),
-                        rs.getInt("categoryId"),
-                        rs.getInt("cost"),
-                        rs.getString("content"),
-                        rs.getString("status")),
-                buyerUserId
-        );
-    }
-    //특정 게시물 대표 이미지 조회
-    public GetWishListImage getWishListTitleImage(int postId){
-        String getgetWishListTitleImageQuery = "select postImageId, image\n" +
-                "from PostImage\n" +
-                "where postId = 13 && status = 'Valid'\n" +
-                "order by postImageId asc,created asc limit 1;";    //디비에 이 쿼리를 날린다.
-        return this.jdbcTemplate.queryForObject(getgetWishListTitleImageQuery,
-                (rs,rowNum) -> new GetWishListImage(
-                        rs.getInt("postImageId"),
-                        rs.getString("image")),
-                postId
-        );
-    }
-
-    //특정 게시물 전체 이미지 조회
-    public List<GetWishListImage> getWishListAllImage(int postId){
-        String getWishListAllImageQuery = "select postImageId, image\n" +
-                "from PostImage\n" +
-                "where postId = ? && status = 'Valid'\n" +
-                "order by postImageId asc,created asc";    //디비에 이 쿼리를 날린다.
-        return this.jdbcTemplate.query(getWishListAllImageQuery,
-                (rs,rowNum) -> new GetWishListImage(
-                        rs.getInt("postImageId"),
-                        rs.getString("image")),
-                postId
-        );
-    }
-
-     */
 
 
 }

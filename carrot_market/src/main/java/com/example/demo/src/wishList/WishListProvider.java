@@ -65,53 +65,6 @@ public class WishListProvider {
         }
 
     }
-    /*
-    //특정 유저 판매중 게시물 조회
-    public List<AllWishListSelectRes> saleWishListSelect(int userId) throws BaseException{
-        int checkUserId = wishListDao.checkUserId(userId);
-        if(checkUserId == 0){//정상 상태가 아닌 유저라면
-            throw new BaseException(POST_POST_INVALID_USER);
-        }
-        try{
-            List<AllWishListSelectRes> saleWishListSelect = wishListDao.saleWishListSelect(userId);//getUser(userIdx)를 반환받아서 반환한다.
-            return saleWishListSelect;
-        } catch(Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-
-    }
-    //특정 유저 판매완료 게시물 조회
-    public List<AllWishListSelectRes> dealCompleteWishListSelect(int sellerUserId) throws BaseException{
-        int checkUserId = wishListDao.checkUserId(sellerUserId);
-        if(checkUserId == 0){//정상 상태가 아닌 유저라면
-            throw new BaseException(POST_POST_INVALID_USER);
-        }
-        try{
-            List<AllWishListSelectRes> dealCompleteWishListSelect = wishListDao.dealCompleteWishListSelect(sellerUserId);//getUser(userIdx)를 반환받아서 반환한다.
-            return dealCompleteWishListSelect;
-        } catch(Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-
-    }
-
-    //특정 유저 숨김 게시물 조회
-    public List<AllWishListSelectRes> hideWishListSelect(int userId) throws BaseException{
-        int checkUserId = wishListDao.checkUserId(userId);
-        if(checkUserId == 0){//정상 상태가 아닌 유저라면
-            throw new BaseException(POST_POST_INVALID_USER);
-        }
-        try{
-            List<AllWishListSelectRes> hideWishListSelect = wishListDao.hideWishListSelect(userId);//getUser(userIdx)를 반환받아서 반환한다.
-            return hideWishListSelect;
-        } catch(Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-
-    }
-
-     */
-
 
 
 }
