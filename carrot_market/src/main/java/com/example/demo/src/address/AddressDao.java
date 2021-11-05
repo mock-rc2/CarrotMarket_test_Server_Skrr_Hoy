@@ -160,9 +160,9 @@ public class AddressDao {
         );
     }
 
-    public void patchAddressStatus(int addressId){
+    public void patchAddressStatusValid(int addressId){
 
-        String modifyLoginPasswordQuery = "update Address set status = 'Valid' where addressId = ?";
+        String modifyLoginPasswordQuery = "update Address set status = 'Valid', selectAddress = 'Valid' where addressId = ?";
         Object[] modifyLoginPasswordParams = new Object[]{addressId};
 
         this.jdbcTemplate.update(modifyLoginPasswordQuery,modifyLoginPasswordParams);
@@ -183,4 +183,34 @@ public class AddressDao {
         );
     }
 
+    public int isSelectedTown(int userId, int townId){
+        String getIsSelectedTownQuery = "select exists( select addressId from Address where userId = ? and townId = ? and status = 'Valid')";
+        return this.jdbcTemplate.queryForObject(getIsSelectedTownQuery,
+                int.class,
+                userId, townId
+        );
+
+    }
+    public void patchAddressStatusInvalid(int addressId){
+        String patchAddressStatusInvalidQuery = "update Address set status = 'Invalid', selectAddress ='Invalid' where addressId = ?";
+        Object[] patchAddressStatusInvalidParams = new Object[]{addressId};
+
+        this.jdbcTemplate.update(patchAddressStatusInvalidQuery,patchAddressStatusInvalidParams);
+    }
+
+    public void patchSelectAddress(int userId){
+        String patchSelectAddressQuery = "update Address set selectAddress = 'Invalid' where userId = ? and selectAddress = 'Valid'";
+        Object[] patchSelectAddressParams = new Object[]{userId};
+
+        this.jdbcTemplate.update(patchSelectAddressQuery,patchSelectAddressParams);
+    }
+
+
+    public int getAddressIdByState(int userId){
+        String getAddressIdByStateQuery = "select addressId from Address where userId = ?  and status = 'Valid'";
+        return this.jdbcTemplate.queryForObject(getAddressIdByStateQuery,
+                int.class,
+                userId
+        );
+    }
 }

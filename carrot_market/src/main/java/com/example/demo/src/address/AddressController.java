@@ -111,7 +111,7 @@ public class AddressController {
     /**
      * 내 동네 추가
      * [POST] /address/:townId
-     * @return BaseResponse<>
+     * @return BaseResponse<String>
      */
     @ResponseBody
     @PostMapping("/{townId}")
@@ -130,5 +130,27 @@ public class AddressController {
         }
     }
 
+
+    /**
+     * 내 동네 삭제
+     * [PATCH] /address/:townId
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PatchMapping("/{townId}")
+    public BaseResponse<String> PatchAddress(@PathVariable("townId") int townId){
+
+        int userIdByJwt;
+        try {
+            userIdByJwt = jwtService.getUserId();
+
+            addressService.patchAddress(userIdByJwt, townId);
+
+            String result = "동네가 삭제되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 }
