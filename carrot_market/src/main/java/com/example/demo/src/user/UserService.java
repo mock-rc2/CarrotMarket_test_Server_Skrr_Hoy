@@ -36,12 +36,16 @@ public class UserService {
 
     //POST
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
+        
+        // 겹치는 폰 번호가 있다면
+        if(userDao.checkPhoneNumber(postUserReq.getPhoneNumber()) == 1){
+            throw new BaseException(POST_USERS_DUPLICATE_PHONENUMBER);
+        }
 
         try{
 
-            if(userDao.checkPhoneNumber(postUserReq.getPhoneNumber()) == 1){
-                throw new BaseException(POST_USERS_DUPLICATE_PHONENUMBER);
-            }
+
+
             int townId = userDao.getTownId(postUserReq);
 
 

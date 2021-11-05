@@ -1,5 +1,7 @@
 package com.example.demo.src.address;
 
+import com.example.demo.src.user.model.PostLoginReq;
+import com.example.demo.src.user.model.PostLoginRes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.demo.config.BaseException;
@@ -11,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
+
+import static com.example.demo.config.BaseResponseStatus.*;
+import static com.example.demo.utils.ValidationRegex.isRegexPhone;
 
 @RestController
 @RequestMapping("/address")
@@ -103,5 +108,74 @@ public class AddressController {
     }
 
 
+    /**
+     * 내 동네 추가
+     * [POST] /address/:townId
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PostMapping("/{townId}")
+    public BaseResponse<String> PostAddress(@PathVariable("townId") int townId){
 
+        int userIdByJwt;
+        try {
+            userIdByJwt = jwtService.getUserId();
+
+            addressService.postAddress(userIdByJwt, townId);
+
+            String result = "동네가 추가되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
+    /**
+     * 내 동네 삭제
+     * [PATCH] /address/:townId
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PatchMapping("/{townId}")
+    public BaseResponse<String> PatchAddress(@PathVariable("townId") int townId){
+
+
+        int userIdByJwt;
+        try {
+
+            userIdByJwt = jwtService.getUserId();
+
+            addressService.patchAddress(userIdByJwt, townId);
+
+            String result = "동네가 삭제되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 내 동네 바꾸기
+     * [Patch] /address/change/:townId
+     * @return BaseResponse<String>
+     */
+
+    @ResponseBody
+    @PatchMapping("/change/{townId}")
+    public BaseResponse<String> PostChangeAddress(@PathVariable("townId") int townId){
+
+        int userIdByJwt;
+        try {
+            userIdByJwt = jwtService.getUserId();
+
+            addressService.postChangeAddress(userIdByJwt, townId);
+
+            String result = "동네가 변경되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+    
 }
