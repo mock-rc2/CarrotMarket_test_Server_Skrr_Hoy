@@ -56,20 +56,20 @@ public class WishListService {
 
     }
     public void modifyWishListStatus(PatchWishListStatus patchWishListStatus) throws BaseException {
-        try{
-            int checkUserId = wishListDao.checkUserId(patchWishListStatus.getUserId());
-            if(checkUserId == 0){//정상 상태가 아닌 유저라면
-                throw new BaseException(POST_POST_INVALID_USER);
-            }
-            int checkStatus = wishListDao.checkStatus(patchWishListStatus.getWishListId());
-            if(checkStatus == 0){//이미 삭제됐는지
-                throw new BaseException(MODIFY_FAIL_INVALID_STATUS);
-            }
+        int checkUserId = wishListDao.checkUserId(patchWishListStatus.getUserId());
+        if(checkUserId == 0){//정상 상태가 아닌 유저라면
+            throw new BaseException(POST_POST_INVALID_USER);
+        }
+        int checkStatus = wishListDao.checkStatus(patchWishListStatus.getWishListId());
+        if(checkStatus == 0){//이미 삭제됐는지
+            throw new BaseException(MODIFY_FAIL_INVALID_STATUS);
+        }
 
-            int checkUserWish = wishListDao.checkUserWish(patchWishListStatus);
-            if(checkUserWish == 0){//이미 삭제됐는지
-                throw new BaseException(MODIFY_FAIL_INVALID_USER_WISHLIST);
-            }
+        int checkUserWish = wishListDao.checkUserWish(patchWishListStatus);
+        if(checkUserWish == 0){//이미 삭제됐는지
+            throw new BaseException(MODIFY_FAIL_INVALID_USER_WISHLIST);
+        }
+        try{
 
             int result = wishListDao.modifyWishListStatus(patchWishListStatus);
             if(result == 0){
