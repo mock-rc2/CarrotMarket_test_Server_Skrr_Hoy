@@ -142,4 +142,45 @@ public class AddressDao {
         return list;
 
     }
+
+
+    public int getIsExistAddress(int userId,int townId){
+        String getIsExistAddressQuery = "select exists( select addressId from Address where userId = ? and townId = ?)";
+        return this.jdbcTemplate.queryForObject(getIsExistAddressQuery,
+                int.class,
+                userId, townId
+        );
+    }
+
+    public int getAddressId(int userId,int townId){
+        String getAddressIdQuery = "select addressId from Address where userId = ? and townId = ?";
+        return this.jdbcTemplate.queryForObject(getAddressIdQuery,
+                int.class,
+                userId, townId
+        );
+    }
+
+    public void patchAddressStatus(int addressId){
+
+        String modifyLoginPasswordQuery = "update Address set status = 'Valid' where addressId = ?";
+        Object[] modifyLoginPasswordParams = new Object[]{addressId};
+
+        this.jdbcTemplate.update(modifyLoginPasswordQuery,modifyLoginPasswordParams);
+
+    }
+
+    public void createAddress(int userId, int townId){
+        String createAddressQuery = "insert into Address (userId, townId) VALUES (?,?)";
+        Object[] createUserParams = new Object[]{userId, townId};
+        this.jdbcTemplate.update(createAddressQuery, createUserParams);
+    }
+
+    public int countUserAddress(int userId){
+        String countUserAddressQuery = "select count(*) from Address where userId = ? and status = 'Valid'";
+        return this.jdbcTemplate.queryForObject(countUserAddressQuery,
+                int.class,
+                userId
+        );
+    }
+
 }

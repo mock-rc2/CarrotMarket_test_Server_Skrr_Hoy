@@ -43,7 +43,7 @@ public class PostController {
     /**
      * 특정 유저전체 판매중, 판매완료 게시물 조회 API
      * [GET] /post/:userId
-     * @return BaseResponse<PostLoginRes>
+     * @return BaseResponse<AllPostSelectRes>
      */
     @ResponseBody
     @GetMapping("/{userId}")
@@ -52,6 +52,119 @@ public class PostController {
 
             List<AllPostSelectRes> allPostSelectRes = postProvider.allPostSelect(userId);
             return new BaseResponse<>(allPostSelectRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
+
+    /**
+     * 특정 유저전체 판매중 게시물 조회 API
+     * [GET] /post/sales/:userId
+     * @return BaseResponse<AllPostSelectRes>
+     */
+
+    @ResponseBody
+    @GetMapping("/sales/{userId}")
+    public BaseResponse<List<AllPostSelectRes>> salePostSelect(@PathVariable("userId") int userId){
+        try{
+
+            List<AllPostSelectRes> salePostSelect = postProvider.salePostSelect(userId);
+            return new BaseResponse<>(salePostSelect);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
+
+    /**
+     * 특정 유저전체 판매완료 게시물 조회 API
+     * [GET] /post/deal-complete/:sellerUserId
+     * @return BaseResponse<AllPostSelectRes>
+     */
+
+    @ResponseBody
+    @GetMapping("/deal-complete/{sellerUserId}/sale")
+    public BaseResponse<List<AllPostSelectRes>> dealCompletePostSelect(@PathVariable("sellerUserId") int sellerUserId){
+        try{
+
+            List<AllPostSelectRes> dealCompletePostSelect = postProvider.dealCompletePostSelect(sellerUserId);
+            return new BaseResponse<>(dealCompletePostSelect);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
+
+    /**
+     * 특정 유저의 판매 게시물 중 숨김 게시물 조회 API
+     * [GET] /post/hide/:userId
+     * @return BaseResponse<AllPostSelectRes>
+     */
+
+    @ResponseBody
+    @GetMapping("/hide/{userId}")
+    public BaseResponse<List<AllPostSelectRes>> hidePostSelect(@PathVariable("userId") int userId){
+        try{
+
+            List<AllPostSelectRes> hidePostSelect = postProvider.hidePostSelect(userId);
+            return new BaseResponse<>(hidePostSelect);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
+
+
+    /**
+     * 특정 유저전체 구매완료 게시물 조회 API
+     * [GET] /post/deal-complete/:buyerUserId
+     * @return BaseResponse<AllPostSelectRes>
+     */
+
+    @ResponseBody
+    @GetMapping("/deal-complete/{buyerUserId}/purchase")
+    public BaseResponse<List<AllPostSelectRes>> purchaseCompletePostSelect(@PathVariable("buyerUserId") int buyerUserId){
+        try{
+
+            List<AllPostSelectRes> purchaseCompletePostSelect = postProvider.purchaseCompletePostSelect(buyerUserId);
+            return new BaseResponse<>(purchaseCompletePostSelect);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
+
+    /**
+     * 게시물 대표 이미지 조회 게시물(가장 먼저 들어간 이미지를 반환합니다.)
+     * [GET] /post/title-image?postId={postId}
+     * @return BaseResponse<AllPostSelectRes>
+     */
+
+    @ResponseBody
+    @GetMapping("/title-image")
+    public BaseResponse<GetPostImage> getPostTitleImage(@RequestParam("postId") int postId){
+        try{
+            GetPostImage getPostTitleImage = postProvider.getPostTitleImage(postId);
+            return new BaseResponse(getPostTitleImage);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
+
+    /**
+     * 게시물 이미지 조회 게시물(가장 먼저 들어간 이미지를 반환합니다.)
+     * [GET] /post/title-image?postId={postId}
+     * @return BaseResponse<AllPostSelectRes>
+     */
+
+    @ResponseBody
+    @GetMapping("/image")
+    public BaseResponse<List<GetPostImage>> getPostAllImage(@RequestParam("postId") int postId){
+        try{
+            List<GetPostImage> getPostAllImage = postProvider.getPostAllImage(postId);
+            return new BaseResponse<>(getPostAllImage);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
