@@ -111,7 +111,7 @@ public class AddressService {
 
 
 
-    public void postChangeAddress(int userId,int townId) throws BaseException{
+    public void patchChangeAddress(int userId,int townId) throws BaseException{
         // 1. 현재 유저가 선택한 동네가 2개인지 확인
         // 2. 현재 유저가 townId를 선택하고 있는지 확인
         // 3. 현재 선택한 동네의 selectAddress = Invalid 로 변경
@@ -145,11 +145,26 @@ public class AddressService {
             throw new BaseException(DATABASE_ERROR);
         }
 
+    }
+    public void patchAddressRange(int userId, int townId, int range) throws BaseException {
+        // 1. 현재 유저가 townId를 선택하고 있는지 확인
+        // 2. addressId 찾기
+        // 3. addressId의 range 변경
 
+        //1. townId 확인
+        if (addressDao.isSelectedTown(userId,townId) == 0) {
+            throw new BaseException(POST_ADDRESS_EXIST_ERROR);
+        }
 
+        //2. addressId 찾기
+        int addressId = addressDao.getAddressId(userId, townId);
 
-
-
+        //3. addressId에 해당하는 range 변경
+        try {
+            addressDao.patchAddressRange(addressId, range);
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
 
     }
 }

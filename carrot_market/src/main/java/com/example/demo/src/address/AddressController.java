@@ -169,7 +169,7 @@ public class AddressController {
         try {
             userIdByJwt = jwtService.getUserId();
 
-            addressService.postChangeAddress(userIdByJwt, townId);
+            addressService.patchChangeAddress(userIdByJwt, townId);
 
             String result = "동네가 변경되었습니다.";
             return new BaseResponse<>(result);
@@ -221,5 +221,32 @@ public class AddressController {
         }
     }
 
+
+    /**
+     * 동네 설정 범위 변경
+     * [Patch] /address/:townId/:range
+     * @return BaseResponse<String>
+     */
+
+    @ResponseBody
+    @PatchMapping("/{townId}/{range}")
+    public BaseResponse<String> PostChangeAddressRange(@PathVariable("townId") int townId, @PathVariable("range") int range){
+
+
+        if( range < 0 || range > 3){
+            return new BaseResponse<>(PATCH_RANGE_RANGE_ERROR);
+        }
+        int userIdByJwt;
+        try {
+            userIdByJwt = jwtService.getUserId();
+
+            addressService.patchAddressRange(userIdByJwt, townId, range);
+
+            String result = "범위가 변경되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
     
 }

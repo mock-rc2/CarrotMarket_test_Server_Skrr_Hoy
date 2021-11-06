@@ -237,4 +237,10 @@ public class AddressDao {
     }
 
 
+    public void patchAddressRange(int addressId,int range){
+        String patchAddressRangeQuery = "update Address set `range` = ? where addressId = ? ";
+        Object[] patchAddressRangeParams = new Object[]{range, addressId};
+
+        this.jdbcTemplate.update(patchAddressRangeQuery,patchAddressRangeParams);
+    }
 }
