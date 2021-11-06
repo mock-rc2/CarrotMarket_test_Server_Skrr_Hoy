@@ -58,10 +58,6 @@ public enum BaseResponseStatus {
     //[GET] /address/location
     GET_TOWN_EXIST_ERROR(false, 2030, "존재하지 않는 동네입니다."),
 
-
-    //[GET] /address/location
-    GET_TOWN_EXIST_ERROR(false, 2030, "존재하지 않는 동네입니다."),
-
     //[POST]  /address/:townId
     //[POST]  /address/:townId
     CREATE_ADDRESS_ERROR(false, 2040, "동네를 3개 이상 추가할 수 없습니다."),
