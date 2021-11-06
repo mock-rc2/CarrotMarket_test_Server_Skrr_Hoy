@@ -214,5 +214,27 @@ public class AddressDao {
         );
     }
 
+    public GetAddressRes getAddress(int userId){
+        String getAddressQuery = "select townId, certification, `range` from Address where userId = ? and selectAddress = 'Valid'  ";
+        return this.jdbcTemplate.queryForObject(getAddressQuery,
+                (rs, rowNum) -> new GetAddressRes(
+                    rs.getInt("townId"),
+                    rs.getString("certification"),
+                    rs.getInt("range")
+                ),
+                userId);
+    }
+
+    public GetTownNameRes getTownName(int townId){
+        String getTownNameQuery = "select city, district, townName from Town where townId = ?";
+        return this.jdbcTemplate.queryForObject(getTownNameQuery,
+                (rs, rowNum) -> new GetTownNameRes(
+                        rs.getString("city"),
+                        rs.getString("district"),
+                        rs.getString("townName")
+                ),
+                townId);
+    }
+
 
 }

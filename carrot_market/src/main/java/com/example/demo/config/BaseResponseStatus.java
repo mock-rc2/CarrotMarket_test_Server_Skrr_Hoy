@@ -64,6 +64,10 @@ public enum BaseResponseStatus {
     // [POST] /address/change/:townId
     POST_ADDRESS_CHANGE_ERROR(false, 2042, "동네를 변경할 수 없습니다"),
     POST_ADDRESS_EXIST_ERROR(false, 2043, "변경할 동네가 존재하지 않습니다."),
+    // [GET] /address/:townId
+
+
+
     /**
      * 3000 : Response 오류
      */

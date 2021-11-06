@@ -177,5 +177,49 @@ public class AddressController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+
+    /**
+     * 유저가 설정한 townId, 인증여부, 범위 가져오기
+     * [GET] /address
+     * @return BaseResponse<GetAddressRes>
+     */
+    @ResponseBody
+    @GetMapping("/info")
+    public BaseResponse<GetAddressRes> getAddress() throws BaseException {
+
+        int userIdByJwt;
+        try {
+            userIdByJwt = jwtService.getUserId();
+
+            GetAddressRes getAddressRes = addressProvider.getAddress(userIdByJwt);
+
+            return new BaseResponse<>(getAddressRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 입력받은 townId를 동네 이름으로 반환하기
+     * [GET] /address/:townId
+     * @return BaseResponse<GetTownRes>
+     */
+    @ResponseBody
+    @GetMapping("/{townId}")
+    public BaseResponse<GetTownNameRes> getTownName(@PathVariable("townId") int townId) throws BaseException {
+
+        if(townId < 1 || townId >6561 ){
+            return new BaseResponse<>(GET_TOWN_EXIST_ERROR);
+        }
+        try {
+
+            GetTownNameRes getTownNameRes = addressProvider.getTownName(townId);
+            return new BaseResponse<>(getTownNameRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
     
 }
