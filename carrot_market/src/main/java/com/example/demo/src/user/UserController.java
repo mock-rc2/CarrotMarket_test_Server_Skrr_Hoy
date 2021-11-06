@@ -58,7 +58,6 @@ public class UserController {
             return new BaseResponse<>(POST_USERS_INVALID_PHONE);
         }
 
-
         try{
             PostUserRes postUserRes = userService.createUser(postUserReq);
             return new BaseResponse<>(postUserRes);

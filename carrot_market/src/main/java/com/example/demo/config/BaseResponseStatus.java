@@ -48,7 +48,7 @@ public enum BaseResponseStatus {
 
     //[POST] /post/title-image
     POST_POST_INVALID_POST(false, 2024, "조회할 수 없는 게시물 입니다."),
-    
+
     //[POST] /wish-list/status/
     PATCH_WISHLIST_INVALID_STATUS(false, 2025, "Status가 제대로 입력되지 않았습니다."),
     MODIFY_FAIL_WISHLIST_STATUS(false, 2026, "Status 수정에 실패하였습니다."),
