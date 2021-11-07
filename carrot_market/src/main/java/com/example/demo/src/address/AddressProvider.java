@@ -131,6 +131,18 @@ public class AddressProvider {
 
         try {
             GetAddressRes getAddressRes = addressDao.getAddress(userId);
+            // 인증 날짜 검토
+            if(getAddressRes.getCertification().equals("Valid")) {
+                int addressId = addressDao.getAddressId(userId, getAddressRes.getTownId());
+                //인증된 날짜가 90일이 넘으면 Invalid로 바꿈
+                if (addressDao.getDateDiffCertification(addressId) > 90 ){
+                    //1. 인증된 날짜가 90일이 넘으면 Invalid로 바꿈
+                    addressDao.patchCertificationInvalid(addressId);
+                    //2. getAddressRes의 certification 변경
+                    getAddressRes.setCertification("Invalid");
+                }
+
+            }
 
             return getAddressRes;
         }catch (Exception exception) {
@@ -147,6 +159,22 @@ public class AddressProvider {
         }catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
+    }
+
+    public ArrayList<GetTownNameRes> getUserAddress(int userId) throws BaseException {
+
+        try {
+            ArrayList<GetTownNameRes> getUserAddress = new ArrayList<>();
+            ArrayList<Integer> getTownIdByUserAddress = addressDao.getUserAddress(userId);
+            for(int i=0; i < getTownIdByUserAddress.size(); i++){
+                getUserAddress.add(addressDao.getTownName(getTownIdByUserAddress.get(i)));
+            }
+
+            return getUserAddress;
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+
     }
 
 

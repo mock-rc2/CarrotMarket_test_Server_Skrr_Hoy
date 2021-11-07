@@ -244,6 +244,62 @@ public class AddressDao {
 
         this.jdbcTemplate.update(patchAddressRangeQuery,patchAddressRangeParams);
     }
+
+    public ArrayList<Integer> getUserAddress(int userId){
+        String getUserAddressQuery = "select townId from Address where userId = ? and status ='Valid' ";
+        ArrayList<Integer> list = new ArrayList<>();
+
+        this.jdbcTemplate.query(getUserAddressQuery,
+                (rs, rowNum) -> list.add(rs.getInt("townId")),
+                userId);
+        return list;
+    }
+
+
+    public int getDateDiffCertification(int addressId){
+        String getDateDiffCertificationQuery = "select DATEDIFF(CURDATE(), certificationUpdated) from Address where addressId = ? ";
+        return this.jdbcTemplate.queryForObject(getDateDiffCertificationQuery,
+                int.class,
+                addressId
+        );
+    }
+
+    public void patchCertificationInvalid(int addressId){
+        // 1. certification Invalid 로 바꾸기
+        String patchCertificationInvalidQuery = "update Address set certification = 'Invalid' where addressId = ? ";
+        Object[] patchCertificationInvalidParams = new Object[]{addressId};
+
+        this.jdbcTemplate.update(patchCertificationInvalidQuery,patchCertificationInvalidParams);
+
+        //2. update시간 바꾸기
+        String patchCertificatioUpdatedQuery = "update Address set certificationUpdated = CURRENT_TIMESTAMP where addressId = ? ";
+        Object[] patchCertificatioUpdatedParams = new Object[]{addressId};
+
+        this.jdbcTemplate.update(patchCertificatioUpdatedQuery,patchCertificatioUpdatedParams);
+
+   }
+
+    public int isSelectedAddress(int userId, int townId) {
+        String getIsSelectedTownQuery = "select exists( select addressId from Address where userId = ? and townId = ? and selectAddress = 'Valid')";
+        return this.jdbcTemplate.queryForObject(getIsSelectedTownQuery,
+                int.class,
+                userId, townId
+        );
+    }
+
+    public void patchCertificationAddress(int addressId){
+        String patchCertificationAddressQuery = "update Address set certification = 'Valid' where addressId = ? ";
+        Object[] patchCertificationAddressParams = new Object[]{addressId};
+
+        this.jdbcTemplate.update(patchCertificationAddressQuery,patchCertificationAddressParams);
+
+        //2. update시간 바꾸기
+        String patchCertificatioUpdatedQuery = "update Address set certificationUpdated = CURRENT_TIMESTAMP where addressId = ? ";
+        Object[] patchCertificatioUpdatedParams = new Object[]{addressId};
+
+        this.jdbcTemplate.update(patchCertificatioUpdatedQuery,patchCertificatioUpdatedParams);
+
+    }
 }
 
 

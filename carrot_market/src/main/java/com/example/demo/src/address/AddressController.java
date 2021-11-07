@@ -47,6 +47,9 @@ public class AddressController {
     @ResponseBody
     @GetMapping("")
     public BaseResponse<List<GetTownRes>> getTownSearchBySearch(@RequestParam("search") String search, @RequestParam("townId") int townId ) {
+        if(townId < 1 || townId >6561 ){
+            return new BaseResponse<>(GET_TOWN_EXIST_ERROR);
+        }
         try{
             List<GetTownRes> getTownRes = addressProvider.getTownBySearch(search, townId);
             return new BaseResponse<>(getTownRes);
@@ -64,6 +67,9 @@ public class AddressController {
     @ResponseBody
     @GetMapping("/location")
     public BaseResponse<List<GetTownRes>> getTownSearchByLocation(@RequestParam("townId") int townId) {
+        if(townId < 1 || townId >6561 ){
+            return new BaseResponse<>(GET_TOWN_EXIST_ERROR);
+        }
         try{
             List<GetTownRes> getTownRes = addressProvider.getTownByLocation(townId);
             return new BaseResponse<>(getTownRes);
@@ -82,6 +88,7 @@ public class AddressController {
     @GetMapping("/townId")
     public BaseResponse<Integer> getTownIdByCurrentLocation(@RequestParam("city") String city, @RequestParam("district") String district, @RequestParam("townName") String townName) throws BaseException {
 
+
         try{
             int townId = addressProvider.getTownId(city, district, townName);
             return new BaseResponse<>(townId);
@@ -99,6 +106,11 @@ public class AddressController {
     @ResponseBody
     @GetMapping("/near")
     public BaseResponse<GetNearTownListRes> getNearTownLiST(@RequestParam("townId") int townId) throws BaseException {
+
+        if(townId < 1 || townId >6561 ){
+            return new BaseResponse<>(GET_TOWN_EXIST_ERROR);
+        }
+
         try{
             GetNearTownListRes getNearTownListRes  = addressProvider.getNearTownList(townId);
             return new BaseResponse<>(getNearTownListRes);
@@ -116,6 +128,10 @@ public class AddressController {
     @ResponseBody
     @PostMapping("/{townId}")
     public BaseResponse<String> PostAddress(@PathVariable("townId") int townId){
+
+        if(townId < 1 || townId >6561 ){
+            return new BaseResponse<>(GET_TOWN_EXIST_ERROR);
+        }
 
         int userIdByJwt;
         try {
@@ -139,6 +155,10 @@ public class AddressController {
     @ResponseBody
     @PatchMapping("/{townId}")
     public BaseResponse<String> PatchAddress(@PathVariable("townId") int townId){
+
+        if(townId < 1 || townId >6561 ){
+            return new BaseResponse<>(GET_TOWN_EXIST_ERROR);
+        }
 
 
         int userIdByJwt;
@@ -164,6 +184,10 @@ public class AddressController {
     @ResponseBody
     @PatchMapping("/change/{townId}")
     public BaseResponse<String> PostChangeAddress(@PathVariable("townId") int townId){
+
+        if(townId < 1 || townId >6561 ){
+            return new BaseResponse<>(GET_TOWN_EXIST_ERROR);
+        }
 
         int userIdByJwt;
         try {
@@ -230,12 +254,13 @@ public class AddressController {
      * [Patch] /address/:townId/:range
      * @return BaseResponse<String>
      */
-
     @ResponseBody
     @PatchMapping("/{townId}/{range}")
     public BaseResponse<String> PostChangeAddressRange(@PathVariable("townId") int townId, @PathVariable("range") int range){
 
-
+        if(townId < 1 || townId >6561 ){
+            return new BaseResponse<>(GET_TOWN_EXIST_ERROR);
+        }
         if( range < 0 || range > 3){
             return new BaseResponse<>(PATCH_RANGE_RANGE_ERROR);
         }
@@ -251,7 +276,53 @@ public class AddressController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
-    
+
+
+    /**
+     * 설정된 동네들 조회
+     * [GET] /address/user-address
+     * @return BaseResponse<GetTownRes>
+     */
+    @ResponseBody
+    @GetMapping("/user-address")
+    public BaseResponse<List<GetTownNameRes>> getUserAddress() throws BaseException {
+
+        int userIdByJwt;
+        try {
+            userIdByJwt = jwtService.getUserId();
+            List<GetTownNameRes> getUserAddressRes = addressProvider.getUserAddress(userIdByJwt);
+            return new BaseResponse<>(getUserAddressRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 동네 인증 추가하기
+     * [Patch] /address/certification/:townId
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PatchMapping("/certification/{townId}")
+    public BaseResponse<String> PatchCertificationAddress(@PathVariable("townId") int townId){
+
+        if(townId < 1 || townId >6561 ){
+            return new BaseResponse<>(GET_TOWN_EXIST_ERROR);
+        }
+        int userIdByJwt;
+
+        try {
+            userIdByJwt = jwtService.getUserId();
+
+            addressService.patchCertificationAddress(userIdByJwt, townId);
+
+            String result = "동네가 인증되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }
 
 
