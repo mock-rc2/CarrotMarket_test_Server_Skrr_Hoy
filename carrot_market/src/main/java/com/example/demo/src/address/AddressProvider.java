@@ -124,4 +124,29 @@ public class AddressProvider {
         GetNearTownListRes getNearTownListRes = new GetNearTownListRes(r1,r2,r3,r4);
         return getNearTownListRes;
     }
+
+
+    public GetAddressRes getAddress(int userId) throws BaseException {
+
+        try {
+            GetAddressRes getAddressRes = addressDao.getAddress(userId);
+
+            return getAddressRes;
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+
+    }
+
+    public GetTownNameRes getTownName(int townId) throws BaseException {
+        try {
+            GetTownNameRes getTownName = addressDao.getTownName(townId);
+            return getTownName;
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
 }
