@@ -173,5 +173,13 @@ public class PostDao {
         return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
     }
 
+    public int createPostImage(PostPostImageReq postPostImageReq){
+        String createPostImageQuery = "insert into PostImage (postId, image) VALUES (?,?)";
+        Object[] createPostImageParams = new Object[]{postPostImageReq.getPostId(), postPostImageReq.getImage()};
+        this.jdbcTemplate.update(createPostImageQuery, createPostImageParams);
+        String lastInserIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
+    }
+
 
 }
