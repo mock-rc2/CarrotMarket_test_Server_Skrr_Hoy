@@ -35,10 +35,17 @@ public class AddressService {
     }
 
     public void postAddress(int userId, int townId) throws BaseException {
+
             // 1. 현재 설정된 동네 갯수 파악 -> 현재 설정된 2개 미만이라면 동네 추가 가능
             // 2. 이미 저장되어있었던 동네인 지 확인
             // 3. 저장되어있다면 status Valid로 바꿈
             // 4. 저장되어있지 않다면
+
+        // 1. 현재 설정된 동네 갯수 파악 -> 현재 설정된 2개 미만이라면 동네 추가 가능
+        // 2. 이미 저장되어있었던 동네인 지 확인
+        // 3. 저장되어있다면 status Valid로 바꿈
+        // 4. 저장되어있지 않다면
+
 
         // 1. 현재 설정된 동네 갯수 파악
         int stateValidTown = addressDao.countUserAddress(userId);
@@ -111,6 +118,7 @@ public class AddressService {
 
 
 
+
     public void patchChangeAddress(int userId,int townId) throws BaseException{
         // 1. 현재 유저가 선택한 동네가 2개인지 확인
         // 2. 현재 유저가 townId를 선택하고 있는지 확인
@@ -125,6 +133,7 @@ public class AddressService {
         }
 
         //2. 현재 유저가 townId를 선택하고 있는지 확인
+
        if (addressDao.isSelectedTown(userId,townId) == 0) {
             throw new BaseException(POST_ADDRESS_EXIST_ERROR);
        }
@@ -138,12 +147,14 @@ public class AddressService {
             int addressId = addressDao.getAddressId(userId, townId);
 
            //4-2. addressId에 해당하는 selectAddress = Valid로 바꾸기
+
             addressDao.patchAddressStatusValid(addressId);
 
 
         }catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
+
 
     }
     public void patchAddressRange(int userId, int townId, int range) throws BaseException {
@@ -152,19 +163,43 @@ public class AddressService {
         // 3. addressId의 range 변경
 
         //1. townId 확인
-        if (addressDao.isSelectedTown(userId,townId) == 0) {
+        if (addressDao.isSelectedAddress(userId,townId) == 0) {
             throw new BaseException(POST_ADDRESS_EXIST_ERROR);
         }
-
-        //2. addressId 찾기
-        int addressId = addressDao.getAddressId(userId, townId);
-
-        //3. addressId에 해당하는 range 변경
         try {
+            //2. addressId 찾기
+            int addressId = addressDao.getAddressId(userId, townId);
+
+            //3. addressId에 해당하는 range 변경
             addressDao.patchAddressRange(addressId, range);
         }catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
+
+    }
+
+    public void patchCertificationAddress(int userId, int townId) throws BaseException {
+        //1. 현재 유저가 townId를 선택하고 있는지 확인
+        //2. addressId 찾기
+        //3. addressId의 certification Valid로 변경
+
+        // 1. 현재 유저가 townId를 선택하고 있는지 확인
+        if (addressDao.isSelectedAddress(userId,townId) == 0) {
+            throw new BaseException(PATCH_SELECTED_ADDRESS_ERROR);
+        }
+
+        try {
+            //2. addressId 찾기
+            int addressId = addressDao.getAddressId(userId, townId);
+
+            //3. addressId에 해당하는 certification을 Valid로 변경
+            addressDao.patchCertificationAddress(addressId);
+
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+
 
     }
 }
