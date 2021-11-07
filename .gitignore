@@ -1,7 +1,5 @@
 .idea/
 logs/
-<<<<<<< HEAD
-
 
 # Project exclude paths
 .gradle/
@@ -37,7 +35,4 @@ hs_err_pid*
 
 ./.gradle
 
-/build
-=======
-carrot_market/src/main/java/com/example/demo/config/secret/Secret.java
->>>>>>> main
+

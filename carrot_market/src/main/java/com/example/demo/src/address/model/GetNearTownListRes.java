@@ -16,4 +16,5 @@ public class GetNearTownListRes {
     private List<Integer> range2;
     private List<Integer> range3;
     private List<Integer> range4;
+
 }

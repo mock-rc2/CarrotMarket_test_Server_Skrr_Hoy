@@ -193,7 +193,9 @@ public class AddressController {
         try {
             userIdByJwt = jwtService.getUserId();
 
+
             addressService.patchChangeAddress(userIdByJwt, townId);
+
 
             String result = "동네가 변경되었습니다.";
             return new BaseResponse<>(result);
@@ -201,6 +203,7 @@ public class AddressController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
 
 
     /**
@@ -321,3 +324,5 @@ public class AddressController {
     }
 
 }
+
+
