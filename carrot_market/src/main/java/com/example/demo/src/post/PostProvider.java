@@ -4,6 +4,9 @@ package com.example.demo.src.post;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.post.model.*;
+import com.example.demo.src.user.model.PostLoginReq;
+import com.example.demo.src.user.model.PostLoginRes;
+import com.example.demo.src.user.model.User;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,6 +132,17 @@ public class PostProvider {
             List<GetPostImage> getPostAllImage = postDao.getPostAllImage(postId);//getUser(userIdx)를 반환받아서 반환한다.
             return getPostAllImage;
         } catch(Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+    }
+
+    public PostPostRes post(PostPostReq postPostReq) throws BaseException{
+
+        try{
+            int postId = postDao.createPost(postPostReq);
+            return new PostPostRes(postId);
+        } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
 
