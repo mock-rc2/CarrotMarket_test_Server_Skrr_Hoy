@@ -148,5 +148,16 @@ public class PostProvider {
 
     }
 
+    public PostPostImageRes postImage(PostPostImageReq postPostImageReq) throws BaseException{
+
+        try{
+            int postImageId = postDao.createPostImage(postPostImageReq);
+            return new PostPostImageRes(postImageId);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+    }
+
 
 }

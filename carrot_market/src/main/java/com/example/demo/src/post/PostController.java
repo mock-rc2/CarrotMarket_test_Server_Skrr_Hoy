@@ -190,4 +190,24 @@ public class PostController {
         }
     }
 
+    //게시물 추가
+    @ResponseBody
+    @PostMapping("/image")
+    public BaseResponse<PostPostImageRes> postImage(@RequestBody PostPostImageReq postPostImageReq){
+        try{
+            /*
+            //휴대폰번호 입력 체크
+            if(postPostReq.getUserId() == 0){
+                return new BaseResponse<>(POST_USERS_EMPTY_PHONE);
+            }
+
+             */
+
+            PostPostImageRes postPostImageRes = postProvider.postImage(postPostImageReq);
+            return new BaseResponse<>(postPostImageRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }
