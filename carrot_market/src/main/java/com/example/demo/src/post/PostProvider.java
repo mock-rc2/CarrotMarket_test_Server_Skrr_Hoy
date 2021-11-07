@@ -3,6 +3,9 @@ package com.example.demo.src.post;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.address.model.GetAddressRes;
+import com.example.demo.src.address.*;
+import com.example.demo.src.address.model.GetNearTownListRes;
 import com.example.demo.src.post.model.*;
 import com.example.demo.src.user.model.PostLoginReq;
 import com.example.demo.src.user.model.PostLoginRes;
@@ -15,13 +18,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 import static com.example.demo.config.BaseResponseStatus.*;
 
 //Provider : Read의 비즈니스 로직 처리
 @Service
 public class PostProvider {
-
+    private final AddressProvider addressProvider;
+    private final AddressDao addressDao;//주소 사용하기 위해 추가
     private final PostDao postDao;
     private final JwtService jwtService;
 
@@ -29,7 +34,9 @@ public class PostProvider {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public PostProvider(PostDao postDao, JwtService jwtService) {
+    public PostProvider(AddressProvider addressProvider, AddressDao addressDao,PostDao postDao, JwtService jwtService) {
+        this.addressProvider = addressProvider;
+        this.addressDao = addressDao;//주소 사용하기 위해 추가
         this.postDao = postDao;
         this.jwtService = jwtService;
     }
@@ -137,22 +144,118 @@ public class PostProvider {
 
     }
 
-    public PostPostRes post(PostPostReq postPostReq) throws BaseException{
 
-        try{
-            int postId = postDao.createPost(postPostReq);
-            return new PostPostRes(postId);
+    public List<PostSelectRes> getPostUseAddress(int userId, int townId, int range) throws BaseException{
+
+        try{//range 값에 따라 다른 근처 동네를 조회해야 한다.
+            GetNearTownListRes getNearTownListRes = addressProvider.getNearTownList(townId);
+            List<Integer> rangeList = null;
+            String selectPostQurey = "";
+            if(range == 0){
+                rangeList = getNearTownListRes.getRange1();
+            }
+            else if(range == 1){
+                rangeList = getNearTownListRes.getRange2();
+            }
+            else if(range == 2){
+                rangeList = getNearTownListRes.getRange3();
+            }
+            else if(range == 3){
+                rangeList = getNearTownListRes.getRange4();
+            }
+            //이 리스트에 담긴 동네에 해당하는 게시글을 조회해야한다. 카테고리는 아직 완성되지 않아서 이후 추가할것.
+            for(int i=0;i<rangeList.size();i++){
+                if(i == rangeList.size()-1){
+                    int Idx = rangeList.get(i);
+                    selectPostQurey += "townId = "+Idx;
+                }
+                else{
+                    int Idx = rangeList.get(i);
+                    selectPostQurey += "townId = " + Idx + " OR ";
+                }
+
+            }
+
+            List<PostSelectRes> getPostUseAddress = postDao.getPostUseAddress(selectPostQurey);
+            return getPostUseAddress;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }
 
     }
 
-    public PostPostImageRes postImage(PostPostImageReq postPostImageReq) throws BaseException{
+    public List<PostSelectRes> getPostUseAddressByKeyword(int userId, int townId, int range, String keyword) throws BaseException{
 
-        try{
-            int postImageId = postDao.createPostImage(postPostImageReq);
-            return new PostPostImageRes(postImageId);
+        try{//range 값에 따라 다른 근처 동네를 조회해야 한다.
+            GetNearTownListRes getNearTownListRes = addressProvider.getNearTownList(townId);
+            List<Integer> rangeList = null;
+            String selectPostQurey = "";
+            if(range == 0){
+                rangeList = getNearTownListRes.getRange1();
+            }
+            else if(range == 1){
+                rangeList = getNearTownListRes.getRange2();
+            }
+            else if(range == 2){
+                rangeList = getNearTownListRes.getRange3();
+            }
+            else if(range == 3){
+                rangeList = getNearTownListRes.getRange4();
+            }
+            //이 리스트에 담긴 동네에 해당하는 게시글을 조회해야한다. 카테고리는 아직 완성되지 않아서 이후 추가할것.
+            for(int i=0;i<rangeList.size();i++){
+                if(i == rangeList.size()-1){
+                    int Idx = rangeList.get(i);
+                    selectPostQurey += "townId = "+Idx;
+                }
+                else{
+                    int Idx = rangeList.get(i);
+                    selectPostQurey += "townId = " + Idx + " OR ";
+                }
+
+            }
+
+            List<PostSelectRes> getPostUseAddressByKeyword = postDao.getPostUseAddressByKeyword(selectPostQurey,keyword);
+            return getPostUseAddressByKeyword;
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+    }
+
+    public List<PostSelectRes> getPostUseAddressByCategory(int userId, int townId, int range, int categoryId) throws BaseException{
+
+        try{//range 값에 따라 다른 근처 동네를 조회해야 한다.
+            GetNearTownListRes getNearTownListRes = addressProvider.getNearTownList(townId);
+            List<Integer> rangeList = null;
+            String selectPostQurey = "";
+            if(range == 0){
+                rangeList = getNearTownListRes.getRange1();
+            }
+            else if(range == 1){
+                rangeList = getNearTownListRes.getRange2();
+            }
+            else if(range == 2){
+                rangeList = getNearTownListRes.getRange3();
+            }
+            else if(range == 3){
+                rangeList = getNearTownListRes.getRange4();
+            }
+            //이 리스트에 담긴 동네에 해당하는 게시글을 조회해야한다. 카테고리는 아직 완성되지 않아서 이후 추가할것.
+            for(int i=0;i<rangeList.size();i++){
+                if(i == rangeList.size()-1){
+                    int Idx = rangeList.get(i);
+                    selectPostQurey += "townId = "+Idx;
+                }
+                else{
+                    int Idx = rangeList.get(i);
+                    selectPostQurey += "townId = " + Idx + " OR ";
+                }
+
+            }
+
+            List<PostSelectRes> getPostUseAddressByCategory = postDao.getPostUseAddressByCategory(selectPostQurey,categoryId);
+            return getPostUseAddressByCategory;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

@@ -54,6 +54,7 @@ public enum BaseResponseStatus {
     MODIFY_FAIL_WISHLIST_STATUS(false, 2026, "Status 수정에 실패하였습니다."),
     MODIFY_FAIL_INVALID_STATUS(false, 2027, "이미 삭제된 관심 목록입니다."),
     MODIFY_FAIL_INVALID_USER_WISHLIST(false, 2028, "접근 중인 유저의 정보가 아닙니다."),
+    GET_EXSIT_KEYWORD(false, 2029, "키워드 갑과 카테고리 값이 동시에 입력되었습니다. 하나만 입력해주세요."),
 
     //[GET] /address/location
     GET_TOWN_EXIST_ERROR(false, 2030, "존재하지 않는 동네입니다."),

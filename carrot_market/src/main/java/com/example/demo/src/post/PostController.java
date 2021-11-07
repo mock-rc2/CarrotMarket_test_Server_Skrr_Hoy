@@ -183,14 +183,14 @@ public class PostController {
 
              */
 
-            PostPostRes postPostRes = postProvider.post(postPostReq);
+            PostPostRes postPostRes = postService.post(postPostReq);
             return new BaseResponse<>(postPostRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
     }
 
-    //게시물 추가
+    //게시물 이미지 추가
     @ResponseBody
     @PostMapping("/image")
     public BaseResponse<PostPostImageRes> postImage(@RequestBody PostPostImageReq postPostImageReq){
@@ -203,11 +203,42 @@ public class PostController {
 
              */
 
-            PostPostImageRes postPostImageRes = postProvider.postImage(postPostImageReq);
+            PostPostImageRes postPostImageRes = postService.postImage(postPostImageReq);
             return new BaseResponse<>(postPostImageRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
+    }
+
+    @ResponseBody
+    @GetMapping("/inquire-use-address")
+    public BaseResponse<List<PostSelectRes>> getPostUseAddress(@RequestParam("townId") int townId, @RequestParam("range") int range, @RequestParam(required = false) String keyword, @RequestParam(required = false, defaultValue = "0") int categoryId){
+        try{
+            int userIdByJwt;
+            userIdByJwt = jwtService.getUserId();
+            if(keyword != null){
+                if(categoryId != 0){
+                    return new BaseResponse<>(GET_EXSIT_KEYWORD);
+                }
+                else{
+                    List<PostSelectRes> getPostUseAddressByKeyword = postProvider.getPostUseAddressByKeyword(userIdByJwt, townId, range, keyword);
+                    return new BaseResponse<>(getPostUseAddressByKeyword);
+                }
+            }
+
+            else if(categoryId != 0){
+                List<PostSelectRes> getPostUseAddressByCategory = postProvider.getPostUseAddressByCategory(userIdByJwt, townId, range, categoryId);
+                return new BaseResponse<>(getPostUseAddressByCategory);
+            }
+            else{
+                List<PostSelectRes> getPostUseAddress = postProvider.getPostUseAddress(userIdByJwt, townId, range);
+                return new BaseResponse<>(getPostUseAddress);
+            }
+
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
     }
 
 }
