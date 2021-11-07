@@ -2,6 +2,7 @@ package com.example.demo.src.post;
 
 
 import com.example.demo.src.post.model.*;
+import com.example.demo.src.user.model.PostUserReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -162,6 +163,22 @@ public class PostDao {
                         rs.getString("image")),
                 postId
         );
+    }
+
+    public int createPost(PostPostReq postPostReq){
+        String createPostQuery = "insert into Post (userId, townId, title, categoryId, cost, content) VALUES (?,?,?,?,?,?)";
+        Object[] createPostParams = new Object[]{postPostReq.getUserId(), postPostReq.getTownId(), postPostReq.getTitle(), postPostReq.getCategoryId(),postPostReq.getCost(),postPostReq.getContent()};
+        this.jdbcTemplate.update(createPostQuery, createPostParams);
+        String lastInserIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
+    }
+
+    public int createPostImage(PostPostImageReq postPostImageReq){
+        String createPostImageQuery = "insert into PostImage (postId, image) VALUES (?,?)";
+        Object[] createPostImageParams = new Object[]{postPostImageReq.getPostId(), postPostImageReq.getImage()};
+        this.jdbcTemplate.update(createPostImageQuery, createPostImageParams);
+        String lastInserIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
     }
 
 

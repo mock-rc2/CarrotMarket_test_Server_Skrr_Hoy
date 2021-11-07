@@ -8,10 +8,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class PostPostReq {
-    private String city;
-    private String district;
-    private String townName;
-    private String phoneNumber;
-    private String nickName;
-    private String imageURL;
+    private int userId;
+    private int townId;
+    private String title;
+    private int categoryId;
+    private int cost;
+    private String content;
 }

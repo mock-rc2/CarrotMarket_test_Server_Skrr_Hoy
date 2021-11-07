@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PostPostRes {
+public class PostPostImageReq {
     private int postId;
+    private String image;
 }
