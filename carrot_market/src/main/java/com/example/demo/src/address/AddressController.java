@@ -169,7 +169,7 @@ public class AddressController {
         try {
             userIdByJwt = jwtService.getUserId();
 
-            addressService.postChangeAddress(userIdByJwt, townId);
+            addressService.patchChangeAddress(userIdByJwt, townId);
 
             String result = "동네가 변경되었습니다.";
             return new BaseResponse<>(result);
@@ -178,4 +178,75 @@ public class AddressController {
         }
     }
 
+
+    /**
+     * 유저가 설정한 townId, 인증여부, 범위 가져오기
+     * [GET] /address
+     * @return BaseResponse<GetAddressRes>
+     */
+    @ResponseBody
+    @GetMapping("/info")
+    public BaseResponse<GetAddressRes> getAddress() throws BaseException {
+
+        int userIdByJwt;
+        try {
+            userIdByJwt = jwtService.getUserId();
+
+            GetAddressRes getAddressRes = addressProvider.getAddress(userIdByJwt);
+
+            return new BaseResponse<>(getAddressRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 입력받은 townId를 동네 이름으로 반환하기
+     * [GET] /address/:townId
+     * @return BaseResponse<GetTownRes>
+     */
+    @ResponseBody
+    @GetMapping("/{townId}")
+    public BaseResponse<GetTownNameRes> getTownName(@PathVariable("townId") int townId) throws BaseException {
+
+        if(townId < 1 || townId >6561 ){
+            return new BaseResponse<>(GET_TOWN_EXIST_ERROR);
+        }
+        try {
+
+            GetTownNameRes getTownNameRes = addressProvider.getTownName(townId);
+            return new BaseResponse<>(getTownNameRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
+    /**
+     * 동네 설정 범위 변경
+     * [Patch] /address/:townId/:range
+     * @return BaseResponse<String>
+     */
+
+    @ResponseBody
+    @PatchMapping("/{townId}/{range}")
+    public BaseResponse<String> PostChangeAddressRange(@PathVariable("townId") int townId, @PathVariable("range") int range){
+
+
+        if( range < 0 || range > 3){
+            return new BaseResponse<>(PATCH_RANGE_RANGE_ERROR);
+        }
+        int userIdByJwt;
+        try {
+            userIdByJwt = jwtService.getUserId();
+
+            addressService.patchAddressRange(userIdByJwt, townId, range);
+
+            String result = "범위가 변경되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+    
 }
