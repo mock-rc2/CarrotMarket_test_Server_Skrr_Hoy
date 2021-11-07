@@ -152,19 +152,43 @@ public class AddressService {
         // 3. addressId의 range 변경
 
         //1. townId 확인
-        if (addressDao.isSelectedTown(userId,townId) == 0) {
+        if (addressDao.isSelectedAddress(userId,townId) == 0) {
             throw new BaseException(POST_ADDRESS_EXIST_ERROR);
         }
-
-        //2. addressId 찾기
-        int addressId = addressDao.getAddressId(userId, townId);
-
-        //3. addressId에 해당하는 range 변경
         try {
+            //2. addressId 찾기
+            int addressId = addressDao.getAddressId(userId, townId);
+
+            //3. addressId에 해당하는 range 변경
             addressDao.patchAddressRange(addressId, range);
         }catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
+
+    }
+
+    public void patchCertificationAddress(int userId, int townId) throws BaseException {
+        //1. 현재 유저가 townId를 선택하고 있는지 확인
+        //2. addressId 찾기
+        //3. addressId의 certification Valid로 변경
+
+        // 1. 현재 유저가 townId를 선택하고 있는지 확인
+        if (addressDao.isSelectedAddress(userId,townId) == 0) {
+            throw new BaseException(PATCH_SELECTED_ADDRESS_ERROR);
+        }
+
+        try {
+            //2. addressId 찾기
+            int addressId = addressDao.getAddressId(userId, townId);
+
+            //3. addressId에 해당하는 certification을 Valid로 변경
+            addressDao.patchCertificationAddress(addressId);
+
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+
 
     }
 }

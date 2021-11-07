@@ -63,10 +63,11 @@ public enum BaseResponseStatus {
 
     // [POST] /address/change/:townId
     POST_ADDRESS_CHANGE_ERROR(false, 2042, "동네를 변경할 수 없습니다"),
-    POST_ADDRESS_EXIST_ERROR(false, 2043, "변경할 동네가 존재하지 않습니다."),
+    POST_ADDRESS_EXIST_ERROR(false, 2043, "변경할 동네가 선택되지 않았습니다."),
     // [Patch] /address/:townId/:range
     PATCH_RANGE_RANGE_ERROR(false, 2044, "선택한 범위로 변경할 수 없습니다."),
-
+    //[Patch] /address/certification/:townId
+    PATCH_SELECTED_ADDRESS_ERROR(false, 2045, "현재 내 동네와 현재 내 위치가 일치하지 않습니다."),
 
     /**
      * 3000 : Response 오류
