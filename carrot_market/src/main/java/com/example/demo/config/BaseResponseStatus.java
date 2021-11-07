@@ -50,6 +50,12 @@ public enum BaseResponseStatus {
     POST_POST_INVALID_POST(false, 2024, "조회할 수 없는 게시물 입니다."),
 
 
+    //[POST] /wish-list/status/
+    PATCH_WISHLIST_INVALID_STATUS(false, 2025, "Status가 제대로 입력되지 않았습니다."),
+    MODIFY_FAIL_WISHLIST_STATUS(false, 2026, "Status 수정에 실패하였습니다."),
+    MODIFY_FAIL_INVALID_STATUS(false, 2027, "이미 삭제된 관심 목록입니다."),
+    MODIFY_FAIL_INVALID_USER_WISHLIST(false, 2028, "접근 중인 유저의 정보가 아닙니다."),
+
 
     //[GET] /address/location
     GET_TOWN_EXIST_ERROR(false, 2030, "존재하지 않는 동네입니다."),
@@ -57,6 +63,7 @@ public enum BaseResponseStatus {
     //[POST]  /address/:townId
     //[POST]  /address/:townId
     CREATE_ADDRESS_ERROR(false, 2040, "동네를 3개 이상 추가할 수 없습니다."),
+
 
     //[PATCH]  /address/:townId
     PATCH_ADDRESS_EXIST_ERROR(false, 2041, "삭제할 동네가 존재하지 않습니다."),
@@ -67,7 +74,12 @@ public enum BaseResponseStatus {
     // [Patch] /address/:townId/:range
     PATCH_RANGE_RANGE_ERROR(false, 2044, "선택한 범위로 변경할 수 없습니다."),
 
+    //[PATCH]  /address/:townId
+    PATCH_ADDRESS_EXIST_ERROR(false, 2041, "삭제할 동네가 존재하지 않습니다."),
 
+    // [POST] /address/change/:townId
+    POST_ADDRESS_CHANGE_ERROR(false, 2042, "동네를 변경할 수 없습니다"),
+    POST_ADDRESS_EXIST_ERROR(false, 2043, "변경할 동네가 존재하지 않습니다."),
     /**
      * 3000 : Response 오류
      */

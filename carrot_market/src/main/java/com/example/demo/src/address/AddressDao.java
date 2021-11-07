@@ -214,6 +214,7 @@ public class AddressDao {
         );
     }
 
+
     public GetAddressRes getAddress(int userId){
         String getAddressQuery = "select townId, certification, `range` from Address where userId = ? and selectAddress = 'Valid'  ";
         return this.jdbcTemplate.queryForObject(getAddressQuery,
@@ -244,3 +245,7 @@ public class AddressDao {
         this.jdbcTemplate.update(patchAddressRangeQuery,patchAddressRangeParams);
     }
 }
+
+
+
+
