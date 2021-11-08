@@ -88,4 +88,16 @@ public class UserProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+    public GetUserAccountRes getUserAccount(int userId) throws BaseException {
+
+
+        try {
+            GetUserAccountRes getUserAccount = userDao.getUserAccount(userId);
+            return getUserAccount;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+
+    }
 }

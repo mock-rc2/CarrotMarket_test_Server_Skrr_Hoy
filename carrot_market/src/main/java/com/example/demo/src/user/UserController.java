@@ -179,11 +179,11 @@ public class UserController {
 
     /**
      * 유저의 남은 닉네임 변경 불가 기간 조회
-     * [GET] /users/profile/{userId}
+     * [GET] /users/nickname-updated/{userId}
      * @return BaseResponse<GetUserRes>
      */
     @ResponseBody
-    @GetMapping("/profile/{userId}")
+    @GetMapping("/nickname-updated/{userId}")
     public BaseResponse<Integer> getUserNickNameUpdated(@PathVariable("userId") int userId) throws BaseException {
 
         try {
@@ -193,5 +193,43 @@ public class UserController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+
+    /**
+     * 유저의 계정 정보 조회
+     * [GET] /users/account/{userId}
+     * @return BaseResponse<GetUserRes>
+     */
+    @ResponseBody
+    @GetMapping("/account/{userId}")
+    public BaseResponse<GetUserAccountRes> getUserAccount(@PathVariable("userId") int userId) throws BaseException {
+
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
+
+        try {
+            //권한 확인
+            int userIdByJwt = jwtService.getUserId();
+            if(userIdByJwt != userId){
+                throw new BaseException(INVALID_USER_JWT);
+            }
+
+            GetUserAccountRes getUserAccountRes = userProvider.getUserAccount(userId);
+            return new BaseResponse<>(getUserAccountRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
+
 
 }

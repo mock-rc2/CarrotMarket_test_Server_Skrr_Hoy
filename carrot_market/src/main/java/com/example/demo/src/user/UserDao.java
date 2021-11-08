@@ -98,8 +98,8 @@ public class UserDao {
     }
 
     public GetUserRes getUser(int userId){
-        String getUseruery = "select nickName, image from User where userId = ? ";
-        return this.jdbcTemplate.queryForObject(getUseruery,
+        String getUserquery = "select nickName, image from User where userId = ? ";
+        return this.jdbcTemplate.queryForObject(getUserquery,
                 (rs, rowNum) -> new GetUserRes(
                         userId,
                         rs.getString("image"),
@@ -133,11 +133,19 @@ public class UserDao {
 
 
     public int checkNickNameUpdated(int userId){
-        String checkNickNameUpdatedQuery = "select DATEDIFF(CURDATE(), nickNameUpdated) from User where userId = ? ";
+        String checkNickNameUpdatedQuery = "select DATEDIFF(CURDATE(), COALESCE(nickNameUpdated, DATE_ADD(CURDATE(), INTERVAL -31 DAY))) from User where userId = ?";
         int checkNickNameUpdatedParams = userId;
         return this.jdbcTemplate.queryForObject(checkNickNameUpdatedQuery,
                 int.class,
                 checkNickNameUpdatedParams);
     }
-
+    public GetUserAccountRes getUserAccount(int userId){
+        String getUserAccountuery = "select phoneNumber, email from User where userId = ? ";
+        return this.jdbcTemplate.queryForObject(getUserAccountuery,
+                (rs, rowNum) -> new GetUserAccountRes(
+                        rs.getString("email"),
+                        rs.getString("phoneNumber")
+                ),
+                userId);
+    }
 }
