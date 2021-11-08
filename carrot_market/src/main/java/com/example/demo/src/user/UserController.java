@@ -1,5 +1,6 @@
 package com.example.demo.src.user;
 
+import com.example.demo.src.address.model.GetTownNameRes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.demo.config.BaseException;
@@ -9,6 +10,8 @@ import com.example.demo.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+
+import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.utils.ValidationRegex.*;
@@ -113,6 +116,30 @@ public class UserController {
     }
 
 
-
+//
+//    /**
+//     * 유저의 정보 조회
+//     * [GET] /users/:userId
+//     * @return BaseResponse<GetUserRes>
+//     */
+//    @ResponseBody
+//    @GetMapping("/{userId}")
+//    public BaseResponse<GetUserRes> getUserAddress(@PathVariable("userId") int userId) throws BaseException {
+//
+//        int userIdByJwt;
+//        try {
+//            userIdByJwt = jwtService.getUserId();
+//        }catch(BaseException exception){
+//            return new BaseResponse<>(exception.getStatus());
+//        }
+//
+//        try {
+//
+//            GetUserRes getUserRes = userProvider.getUser(userId);
+//            return new BaseResponse<>(getUserRes);
+//        } catch (BaseException exception){
+//            return new BaseResponse<>(exception.getStatus());
+//        }
+//    }
 
 }

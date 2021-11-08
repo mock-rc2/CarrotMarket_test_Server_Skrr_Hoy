@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.xml.crypto.Data;
+import java.util.Date;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
@@ -131,6 +133,16 @@ public class AddressController {
             return new BaseResponse<>(GET_TOWN_EXIST_ERROR);
         }
 
+        //토큰 유효기간 파악
+        try {
+           Date current = new Date(System.currentTimeMillis());
+           if(current.after(jwtService.getExp())){
+               throw new BaseException(INVALID_JWT);
+           }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
         int userIdByJwt;
         try {
             userIdByJwt = jwtService.getUserId();
@@ -154,6 +166,15 @@ public class AddressController {
     @PatchMapping("/{townId}")
     public BaseResponse<String> PatchAddress(@PathVariable("townId") int townId){
 
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
 
         int userIdByJwt;
         try {
@@ -183,6 +204,16 @@ public class AddressController {
             return new BaseResponse<>(GET_TOWN_EXIST_ERROR);
         }
 
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
         int userIdByJwt;
         try {
             userIdByJwt = jwtService.getUserId();
@@ -208,6 +239,16 @@ public class AddressController {
     @ResponseBody
     @GetMapping("/info")
     public BaseResponse<GetAddressRes> getAddress() throws BaseException {
+
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
 
         int userIdByJwt;
         try {
@@ -258,6 +299,17 @@ public class AddressController {
         if( range < 0 || range > 3){
             return new BaseResponse<>(PATCH_RANGE_RANGE_ERROR);
         }
+
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
         int userIdByJwt;
         try {
             userIdByJwt = jwtService.getUserId();
@@ -281,6 +333,15 @@ public class AddressController {
     @GetMapping("/user-address")
     public BaseResponse<List<GetTownNameRes>> getUserAddress() throws BaseException {
 
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
         int userIdByJwt;
         try {
             userIdByJwt = jwtService.getUserId();
@@ -303,6 +364,17 @@ public class AddressController {
         if(townId < 1 || townId >6561 ){
             return new BaseResponse<>(GET_TOWN_EXIST_ERROR);
         }
+
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
         int userIdByJwt;
 
         try {
