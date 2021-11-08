@@ -81,6 +81,7 @@ public enum BaseResponseStatus {
     NICKNAME_UPDATED_ERROR(false, 2047, "최근 30일 내 닉네임을 수정한 적이 있어요."),
 
     MODIFY_FAIL_INVALID_POST(false, 2070, "이미 삭제된 게시글입니다."),
+    MODIFY_FAIL_INVALID_POSTIMAGE(false, 2071, "이미 삭제된 게시글 이미지입니다."),
 
     /**
      * 3000 : Response 오류
