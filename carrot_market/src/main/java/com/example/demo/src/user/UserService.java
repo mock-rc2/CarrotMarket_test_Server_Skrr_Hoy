@@ -3,6 +3,7 @@ package com.example.demo.src.user;
 
 
 import com.example.demo.config.BaseException;
+import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
@@ -71,5 +72,29 @@ public class UserService {
         }
     }
 
+    public void patchUserProfile(int userId, PatchUserProfileReq patchUserProfileReq) throws BaseException {
+        // 1. userId가 유효한 지 확인 ( status = Valid)
+        // 2. 닉네임이 다른지 확인
+        // 3. 닉네임 변경한지 30일 이후인지 확인
+        // 4. 유저 정보 수정
+
+        //1.
+        if (userDao.checkUserExist(userId) == 0) {
+            throw new BaseException(POST_POST_INVALID_USER);
+        }
+        //2.
+
+        if(!userDao.checkUserNickName(userId).equals(patchUserProfileReq.getNickName())){
+            //3
+            if( userDao.checkNickNameUpdated(userId) < 30){
+                throw new BaseException(NICKNAME_UPDATED_ERROR) ;
+            }
+            //4
+            userDao.patchUserProfile(userId, patchUserProfileReq);
+        }else{
+            //4
+            userDao.patchUserProfileImage(userId, patchUserProfileReq.getImage());
+        }
+    }
 
 }

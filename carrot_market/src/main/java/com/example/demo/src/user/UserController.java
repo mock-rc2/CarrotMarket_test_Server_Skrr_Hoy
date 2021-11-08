@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.Date;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
@@ -116,30 +117,64 @@ public class UserController {
     }
 
 
-//
-//    /**
-//     * 유저의 정보 조회
-//     * [GET] /users/:userId
-//     * @return BaseResponse<GetUserRes>
-//     */
-//    @ResponseBody
-//    @GetMapping("/{userId}")
-//    public BaseResponse<GetUserRes> getUserAddress(@PathVariable("userId") int userId) throws BaseException {
-//
-//        int userIdByJwt;
-//        try {
-//            userIdByJwt = jwtService.getUserId();
-//        }catch(BaseException exception){
-//            return new BaseResponse<>(exception.getStatus());
-//        }
-//
-//        try {
-//
-//            GetUserRes getUserRes = userProvider.getUser(userId);
-//            return new BaseResponse<>(getUserRes);
-//        } catch (BaseException exception){
-//            return new BaseResponse<>(exception.getStatus());
-//        }
-//    }
+
+    /**
+     * 유저의 정보 조회
+     * [GET] /users/:userId
+     * @return BaseResponse<GetUserRes>
+     */
+    @ResponseBody
+    @GetMapping("/{userId}")
+    public BaseResponse<GetUserRes> getUserAddress(@PathVariable("userId") int userId) throws BaseException {
+
+        try {
+            GetUserRes getUserRes = userProvider.getUser(userId);
+            return new BaseResponse<>(getUserRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
+    /**
+     * 유저 프로필 수정
+     * [Patch] /users/profile/{userId}
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PatchMapping("/profile/{userId}")
+    public BaseResponse<String> patchUserProfile(@RequestBody PatchUserProfileReq patchUserProfileReq, @PathVariable("userId") int userId){
+
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
+        int userIdByJwt;
+
+        try {
+            //권한 확인
+            userIdByJwt = jwtService.getUserId();
+            if(userIdByJwt != userId){
+                throw new BaseException(INVALID_USER_JWT);
+            }
+            // 닉네임 길이 확인
+            if(patchUserProfileReq.getNickName().length() < 2 || patchUserProfileReq.getNickName().length() > 12){
+                throw new BaseException(NICKNAME_LENGTH_ERROR);
+            }
+            //프로필 수정
+            userService.patchUserProfile(userId, patchUserProfileReq);
+
+            String result = "유저 정보가 변경되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 }
