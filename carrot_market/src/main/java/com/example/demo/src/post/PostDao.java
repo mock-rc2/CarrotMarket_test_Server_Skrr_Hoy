@@ -284,10 +284,10 @@ public class PostDao {
     //상태조회
     public int checkPostStatus(int postId){
         String checkPostQuery = "select exists(select * from Post where postId = ? && status='Valid')";
-        int checkWishListParams = postId;
+        int checkPostParams = postId;
         return this.jdbcTemplate.queryForObject(checkPostQuery,
                 int.class,
-                checkWishListParams);
+                checkPostParams);
 
     }
     //유저의 관심목록이 맞는지 체크
@@ -313,6 +313,25 @@ public class PostDao {
         Object[] modifyOnePostImageStatusParams = new Object[]{patchPostStatus.getStatus(), patchPostStatus.getPostImageId()};
 
         return this.jdbcTemplate.update(modifyOnePostImageStatusQuery,modifyOnePostImageStatusParams);
+    }
+    //게시글 인덱스로 이미지 존재하는지
+    public int checkPostImageStatus(int postId){
+        String checkPostImageQuery = "select exists(select * from PostImage where postId = ? && status='Valid')";
+        int checkPostImageParams = postId;
+        return this.jdbcTemplate.queryForObject(checkPostImageQuery,
+                int.class,
+                checkPostImageParams);
+
+    }
+
+    //게시글 이미지 인덱스로 특정 이미지 존재하는지
+    public int checkOnePostImageStatus(int postImageId){
+        String checkOnePostImageQuery = "select exists(select * from PostImage where postImageId = ? && status='Valid')";
+        int checkOnePostImageParams = postImageId;
+        return this.jdbcTemplate.queryForObject(checkOnePostImageQuery,
+                int.class,
+                checkOnePostImageParams);
+
     }
 
 }

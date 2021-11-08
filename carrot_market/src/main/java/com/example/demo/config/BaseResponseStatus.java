@@ -75,6 +75,7 @@ public enum BaseResponseStatus {
     PATCH_SELECTED_ADDRESS_ERROR(false, 2045, "현재 내 동네와 현재 내 위치가 일치하지 않습니다."),
 
     MODIFY_FAIL_INVALID_POST(false, 2070, "이미 삭제된 게시글입니다."),
+    MODIFY_FAIL_INVALID_POSTIMAGE(false, 2071, "이미 삭제된 게시글 이미지입니다."),
     /**
      * 3000 : Response 오류
      */
