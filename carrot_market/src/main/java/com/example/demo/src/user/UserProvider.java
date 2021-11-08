@@ -63,4 +63,41 @@ public class UserProvider {
         }
     }
 
+
+    public GetUserRes getUser(int userId) throws BaseException{
+        // 1. userId가 유효한 지 확인 ( status = Valid)
+        // 2. userId를 통해 유저 정보 조회
+
+        //1.
+        if (userDao.checkUserExist(userId) == 0) {
+            throw new BaseException(POST_POST_INVALID_USER);
+        }
+        try{
+            GetUserRes getUserRes = userDao.getUser(userId);
+            return getUserRes;
+        }catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+    }
+
+    public int getUserNickNameUpdated(int userId) throws BaseException{
+        try {
+            return 30 - userDao.checkNickNameUpdated(userId);
+        }catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+    public GetUserAccountRes getUserAccount(int userId) throws BaseException {
+
+
+        try {
+            GetUserAccountRes getUserAccount = userDao.getUserAccount(userId);
+            return getUserAccount;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+
+    }
 }

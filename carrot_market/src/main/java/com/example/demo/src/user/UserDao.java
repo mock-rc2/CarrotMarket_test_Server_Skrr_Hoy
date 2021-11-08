@@ -1,6 +1,7 @@
 package com.example.demo.src.user;
 
 
+import com.example.demo.src.address.model.GetAddressRes;
 import com.example.demo.src.user.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -87,4 +88,64 @@ public class UserDao {
                 checkStatusParams);
     }
 
+
+    public int checkUserExist(int userId) {
+        String checkUserExistQuery = "select exists(select userId from User where userId = ? and status='Valid')";
+        int checkUserExistParams = userId;
+        return this.jdbcTemplate.queryForObject(checkUserExistQuery,
+                int.class,
+                checkUserExistParams);
+    }
+
+    public GetUserRes getUser(int userId){
+        String getUserquery = "select nickName, image from User where userId = ? ";
+        return this.jdbcTemplate.queryForObject(getUserquery,
+                (rs, rowNum) -> new GetUserRes(
+                        userId,
+                        rs.getString("image"),
+                        rs.getString("nickName")
+                ),
+                userId);
+    }
+
+    public void patchUserProfile(int userId, PatchUserProfileReq patchUserProfileReq){
+        String patchUserProfileQuery = "update User set nickName = ?,nickNameUpdated = CURRENT_TIMESTAMP, image = ? where userId = ? ";
+        Object[] patchUserProfileParams = new Object[]{patchUserProfileReq.getNickName(),patchUserProfileReq.getImage(),userId};
+
+        this.jdbcTemplate.update(patchUserProfileQuery,patchUserProfileParams);
+    }
+
+    public void patchUserProfileImage(int userId, String image){
+        String patchUserProfileQuery = "update User set image = ? where userId = ? ";
+        Object[] patchUserProfileParams = new Object[]{image ,userId};
+
+        this.jdbcTemplate.update(patchUserProfileQuery,patchUserProfileParams);
+
+    }
+
+    public String checkUserNickName(int userId){
+        String checkUserNickNameQuery = "select nickName from User where userId = ? ";
+        int checkUserNickNameParams = userId;
+        return this.jdbcTemplate.queryForObject(checkUserNickNameQuery,
+                String.class,
+                checkUserNickNameParams);
+    }
+
+
+    public int checkNickNameUpdated(int userId){
+        String checkNickNameUpdatedQuery = "select DATEDIFF(CURDATE(), COALESCE(nickNameUpdated, DATE_ADD(CURDATE(), INTERVAL -31 DAY))) from User where userId = ?";
+        int checkNickNameUpdatedParams = userId;
+        return this.jdbcTemplate.queryForObject(checkNickNameUpdatedQuery,
+                int.class,
+                checkNickNameUpdatedParams);
+    }
+    public GetUserAccountRes getUserAccount(int userId){
+        String getUserAccountuery = "select phoneNumber, email from User where userId = ? ";
+        return this.jdbcTemplate.queryForObject(getUserAccountuery,
+                (rs, rowNum) -> new GetUserAccountRes(
+                        rs.getString("email"),
+                        rs.getString("phoneNumber")
+                ),
+                userId);
+    }
 }
