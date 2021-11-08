@@ -181,5 +181,54 @@ public class PostDao {
         return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
     }
 
+    public List<PostSelectRes> getPostUseAddress(String selectPostQurey){
+        String getPostUseAddressQuery = "select postId, userId, townId, title, categoryId, cost, content, created, status from Post where ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
+        return this.jdbcTemplate.query(getPostUseAddressQuery,
+                (rs,rowNum) -> new PostSelectRes(
+                        rs.getInt("postId"),
+                        rs.getInt("userId"),
+                        rs.getInt("townId"),
+                        rs.getString("title"),
+                        rs.getInt("categoryId"),
+                        rs.getInt("cost"),
+                        rs.getString("content"),
+                        rs.getString("created"),
+                        rs.getString("status"))
+        );
+    }
+
+    public List<PostSelectRes> getPostUseAddressByKeyword(String selectPostQurey, String keyword){
+        String getPostUseAddressQuery = "select postId, userId, townId, title, categoryId, cost, content, created, status from Post where ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') AND title like concat('%', ?, '%') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
+        return this.jdbcTemplate.query(getPostUseAddressQuery,
+                (rs,rowNum) -> new PostSelectRes(
+                        rs.getInt("postId"),
+                        rs.getInt("userId"),
+                        rs.getInt("townId"),
+                        rs.getString("title"),
+                        rs.getInt("categoryId"),
+                        rs.getInt("cost"),
+                        rs.getString("content"),
+                        rs.getString("created"),
+                        rs.getString("status")),
+                keyword
+        );
+    }
+
+    public List<PostSelectRes> getPostUseAddressByCategory(String selectPostQurey, int categoryId){
+        String getPostUseAddressQuery = "select postId, userId, townId, title, categoryId, cost, content, created, status from Post where categoryId = ? AND ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
+        return this.jdbcTemplate.query(getPostUseAddressQuery,
+                (rs,rowNum) -> new PostSelectRes(
+                        rs.getInt("postId"),
+                        rs.getInt("userId"),
+                        rs.getInt("townId"),
+                        rs.getString("title"),
+                        rs.getInt("categoryId"),
+                        rs.getInt("cost"),
+                        rs.getString("content"),
+                        rs.getString("created"),
+                        rs.getString("status")),
+                categoryId
+        );
+    }
 
 }
