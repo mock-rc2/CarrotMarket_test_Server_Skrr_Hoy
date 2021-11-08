@@ -3,10 +3,7 @@ package com.example.demo.src.post;
 
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.post.model.PostPostImageReq;
-import com.example.demo.src.post.model.PostPostImageRes;
-import com.example.demo.src.post.model.PostPostReq;
-import com.example.demo.src.post.model.PostPostRes;
+import com.example.demo.src.post.model.*;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +51,74 @@ public class PostService {
         }
 
     }
+
+    public void modifyPostStatus(PatchPostStatus patchPostStatus) throws BaseException {
+        int checkUserId = postDao.checkUserId(patchPostStatus.getUserId());
+        if(checkUserId == 0){//정상 상태가 아닌 유저라면
+            throw new BaseException(POST_POST_INVALID_USER);
+        }
+        int checkPostStatus = postDao.checkPostStatus(patchPostStatus.getPostId());
+        if(checkPostStatus == 0){//이미 삭제됐는지
+            throw new BaseException(MODIFY_FAIL_INVALID_POST);
+        }
+
+        int checkUserWish = postDao.checkUserPost(patchPostStatus);
+        if(checkUserWish == 0){//유저가 맞지 않으면
+            throw new BaseException(MODIFY_FAIL_INVALID_USER_WISHLIST);
+        }
+        try{
+
+            int result = postDao.modifyPostStatus(patchPostStatus);
+            if(result == 0){
+                throw new BaseException(MODIFY_FAIL_WISHLIST_STATUS);
+            }
+        } catch(Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void modifyPostImageStatus(PatchPostStatus patchPostStatus) throws BaseException {
+        int checkUserId = postDao.checkUserId(patchPostStatus.getUserId());
+        if(checkUserId == 0){//정상 상태가 아닌 유저라면
+            throw new BaseException(POST_POST_INVALID_USER);
+        }
+
+        int checkUserPost = postDao.checkUserPost(patchPostStatus);
+        if(checkUserPost == 0){//유저가 맞지 않으면
+            throw new BaseException(MODIFY_FAIL_INVALID_USER_WISHLIST);
+        }
+        try{
+
+            int result = postDao.modifyPostImageStatus(patchPostStatus);
+            if(result == 0){
+                throw new BaseException(MODIFY_FAIL_WISHLIST_STATUS);
+            }
+        } catch(Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void modifyOnePostImageStatus(PatchPostStatus patchPostStatus) throws BaseException {
+        int checkUserId = postDao.checkUserId(patchPostStatus.getUserId());
+        if(checkUserId == 0){//정상 상태가 아닌 유저라면
+            throw new BaseException(POST_POST_INVALID_USER);
+        }
+
+        int checkUserPost = postDao.checkUserPost(patchPostStatus);
+        if(checkUserPost == 0){//유저가 맞지 않으면
+            throw new BaseException(MODIFY_FAIL_INVALID_USER_WISHLIST);
+        }
+        try{
+
+            int result = postDao.modifyOnePostImageStatus(patchPostStatus);
+            if(result == 0){
+                throw new BaseException(MODIFY_FAIL_WISHLIST_STATUS);
+            }
+        } catch(Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 
 
 

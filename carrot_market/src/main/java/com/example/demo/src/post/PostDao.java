@@ -3,6 +3,7 @@ package com.example.demo.src.post;
 
 import com.example.demo.src.post.model.*;
 import com.example.demo.src.user.model.PostUserReq;
+import com.example.demo.src.wishList.model.PatchWishListStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -182,7 +183,21 @@ public class PostDao {
     }
 
     public List<PostSelectRes> getPostUseAddress(String selectPostQurey){
-        String getPostUseAddressQuery = "select postId, userId, townId, title, categoryId, cost, content, created, status from Post where ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
+        String getPostUseAddressQuery = "select postId, userId, townId, title, categoryId, cost, content, case" +
+                "           when TIMESTAMPDIFF(second, created, current_timestamp) < 60\n" +
+                "               then concat(TIMESTAMPDIFF(second, created, current_timestamp), '초 전') # 1분 미만에는 초로 표시\n" +
+                "           when TIMESTAMPDIFF(minute, created, current_timestamp) < 60\n" +
+                "               then concat(TIMESTAMPDIFF(minute, created, current_timestamp), '분 전') # 1시간 미만에는 분으로 표시\n" +
+                "           when TIMESTAMPDIFF(hour, created, current_timestamp) < 24\n" +
+                "               then concat(TIMESTAMPDIFF(hour, created, current_timestamp), '시간 전') # 24시간 미만에는 시간으로 표시\n" +
+                "           when TIMESTAMPDIFF(DAY, created, current_timestamp) < 31\n" +
+                "               then concat(TIMESTAMPDIFF(DAY, created, current_timestamp), '일 전') # 31일 미만에는 일로 표시\n" +
+                "            when TIMESTAMPDIFF(MONTH, created, current_timestamp) < 12\n" +
+                "               then concat(TIMESTAMPDIFF(MONTH, created, current_timestamp), '개월 전') # 12월 미만에는 월로 표시\n" +
+                "           when TIMESTAMPDIFF(YEAR, created, current_timestamp) >= 1\n" +
+                "               then concat(TIMESTAMPDIFF(YEAR, created, current_timestamp), '년 전') # 1년 이상은 년으로 표시\n" +
+                "\n" +
+                "           end as time, status from Post where ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
         return this.jdbcTemplate.query(getPostUseAddressQuery,
                 (rs,rowNum) -> new PostSelectRes(
                         rs.getInt("postId"),
@@ -192,13 +207,27 @@ public class PostDao {
                         rs.getInt("categoryId"),
                         rs.getInt("cost"),
                         rs.getString("content"),
-                        rs.getString("created"),
+                        rs.getString("time"),
                         rs.getString("status"))
         );
     }
 
     public List<PostSelectRes> getPostUseAddressByKeyword(String selectPostQurey, String keyword){
-        String getPostUseAddressQuery = "select postId, userId, townId, title, categoryId, cost, content, created, status from Post where ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') AND title like concat('%', ?, '%') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
+        String getPostUseAddressQuery = "select postId, userId, townId, title, categoryId, cost, content, case" +
+                "           when TIMESTAMPDIFF(second, created, current_timestamp) < 60\n" +
+                "               then concat(TIMESTAMPDIFF(second, created, current_timestamp), '초 전') # 1분 미만에는 초로 표시\n" +
+                "           when TIMESTAMPDIFF(minute, created, current_timestamp) < 60\n" +
+                "               then concat(TIMESTAMPDIFF(minute, created, current_timestamp), '분 전') # 1시간 미만에는 분으로 표시\n" +
+                "           when TIMESTAMPDIFF(hour, created, current_timestamp) < 24\n" +
+                "               then concat(TIMESTAMPDIFF(hour, created, current_timestamp), '시간 전') # 24시간 미만에는 시간으로 표시\n" +
+                "           when TIMESTAMPDIFF(DAY, created, current_timestamp) < 31\n" +
+                "               then concat(TIMESTAMPDIFF(DAY, created, current_timestamp), '일 전') # 31일 미만에는 일로 표시\n" +
+                "            when TIMESTAMPDIFF(MONTH, created, current_timestamp) < 12\n" +
+                "               then concat(TIMESTAMPDIFF(MONTH, created, current_timestamp), '개월 전') # 12월 미만에는 월로 표시\n" +
+                "           when TIMESTAMPDIFF(YEAR, created, current_timestamp) >= 1\n" +
+                "               then concat(TIMESTAMPDIFF(YEAR, created, current_timestamp), '년 전') # 1년 이상은 년으로 표시\n" +
+                "\n" +
+                "           end as time, status from Post where ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') AND title like concat('%', ?, '%') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
         return this.jdbcTemplate.query(getPostUseAddressQuery,
                 (rs,rowNum) -> new PostSelectRes(
                         rs.getInt("postId"),
@@ -208,14 +237,28 @@ public class PostDao {
                         rs.getInt("categoryId"),
                         rs.getInt("cost"),
                         rs.getString("content"),
-                        rs.getString("created"),
+                        rs.getString("time"),
                         rs.getString("status")),
                 keyword
         );
     }
 
     public List<PostSelectRes> getPostUseAddressByCategory(String selectPostQurey, int categoryId){
-        String getPostUseAddressQuery = "select postId, userId, townId, title, categoryId, cost, content, created, status from Post where categoryId = ? AND ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
+        String getPostUseAddressQuery = "select postId, userId, townId, title, categoryId, cost, content, case" +
+                "           when TIMESTAMPDIFF(second, created, current_timestamp) < 60\n" +
+                "               then concat(TIMESTAMPDIFF(second, created, current_timestamp), '초 전') # 1분 미만에는 초로 표시\n" +
+                "           when TIMESTAMPDIFF(minute, created, current_timestamp) < 60\n" +
+                "               then concat(TIMESTAMPDIFF(minute, created, current_timestamp), '분 전') # 1시간 미만에는 분으로 표시\n" +
+                "           when TIMESTAMPDIFF(hour, created, current_timestamp) < 24\n" +
+                "               then concat(TIMESTAMPDIFF(hour, created, current_timestamp), '시간 전') # 24시간 미만에는 시간으로 표시\n" +
+                "           when TIMESTAMPDIFF(DAY, created, current_timestamp) < 31\n" +
+                "               then concat(TIMESTAMPDIFF(DAY, created, current_timestamp), '일 전') # 31일 미만에는 일로 표시\n" +
+                "            when TIMESTAMPDIFF(MONTH, created, current_timestamp) < 12\n" +
+                "               then concat(TIMESTAMPDIFF(MONTH, created, current_timestamp), '개월 전') # 12월 미만에는 월로 표시\n" +
+                "           when TIMESTAMPDIFF(YEAR, created, current_timestamp) >= 1\n" +
+                "               then concat(TIMESTAMPDIFF(YEAR, created, current_timestamp), '년 전') # 1년 이상은 년으로 표시\n" +
+                "\n" +
+                "           end as time, status from Post where categoryId = ? AND ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
         return this.jdbcTemplate.query(getPostUseAddressQuery,
                 (rs,rowNum) -> new PostSelectRes(
                         rs.getInt("postId"),
@@ -225,10 +268,51 @@ public class PostDao {
                         rs.getInt("categoryId"),
                         rs.getInt("cost"),
                         rs.getString("content"),
-                        rs.getString("created"),
+                        rs.getString("time"),
                         rs.getString("status")),
                 categoryId
         );
+    }
+
+    //상태 수정
+    public int modifyPostStatus(PatchPostStatus patchPostStatus){
+        String modifyPostStatusQuery = "update Post set status = ? where postId = ? ";
+        Object[] modifyPostStatusParams = new Object[]{patchPostStatus.getStatus(), patchPostStatus.getPostId()};
+
+        return this.jdbcTemplate.update(modifyPostStatusQuery,modifyPostStatusParams);
+    }
+    //상태조회
+    public int checkPostStatus(int postId){
+        String checkPostQuery = "select exists(select * from Post where postId = ? && status='Valid')";
+        int checkWishListParams = postId;
+        return this.jdbcTemplate.queryForObject(checkPostQuery,
+                int.class,
+                checkWishListParams);
+
+    }
+    //유저의 관심목록이 맞는지 체크
+    public int checkUserPost(PatchPostStatus patchPostStatus){
+        String checkUserPostQuery = "select exists(select * from Post where userId = ? && postId = ?)";
+        Object[] checkUserPostParams = new Object[]{patchPostStatus.getUserId(), patchPostStatus.getPostId()};
+        return this.jdbcTemplate.queryForObject(checkUserPostQuery,
+                int.class,
+                checkUserPostParams);
+
+    }
+
+    //게시글 전체 이미지 삭제
+    public int modifyPostImageStatus(PatchPostStatus patchPostStatus){
+        String modifyPostImageStatusQuery = "update PostImage set status = ? where postId = ? ";
+        Object[] modifyPostImageStatusParams = new Object[]{patchPostStatus.getStatus(), patchPostStatus.getPostId()};
+
+        return this.jdbcTemplate.update(modifyPostImageStatusQuery,modifyPostImageStatusParams);
+    }
+    //게시글 특정 이미지 삭제
+    public int modifyOnePostImageStatus(PatchPostStatus patchPostStatus){
+        String modifyOnePostImageStatusQuery = "update PostImage set status = ? where postImageId = ? ";
+        Object[] modifyOnePostImageStatusParams = new Object[]{patchPostStatus.getStatus(), patchPostStatus.getPostImageId()};
+
+        return this.jdbcTemplate.update(modifyOnePostImageStatusQuery,modifyOnePostImageStatusParams);
     }
 
 }

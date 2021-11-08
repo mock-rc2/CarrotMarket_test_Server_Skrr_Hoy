@@ -4,6 +4,8 @@ import com.example.demo.src.post.PostProvider;
 import com.example.demo.src.post.PostService;
 import com.example.demo.src.user.model.PostLoginReq;
 import com.example.demo.src.user.model.PostLoginRes;
+import com.example.demo.src.wishList.model.PatchWishListStatus;
+import com.example.demo.src.wishList.model.WishList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.demo.config.BaseException;
@@ -239,6 +241,59 @@ public class PostController {
             return new BaseResponse<>((exception.getStatus()));
         }
 
+    }
+
+    @ResponseBody
+    @PatchMapping("/status/{postId}")
+    public BaseResponse<String> modifyPostStatus(@PathVariable("postId") int postId, @RequestBody Post post){
+        try {
+            //jwt에서 idx 추출.
+            int userId = jwtService.getUserId();
+
+            if(post.getStatus().equals("Invalid")){
+                PatchPostStatus patchPostStatus = new PatchPostStatus(userId,postId,0,post.getStatus());
+                postService.modifyPostStatus(patchPostStatus);
+
+                String result = "";
+                return new BaseResponse<>(result);
+            }
+            else{
+                return new BaseResponse<>(PATCH_WISHLIST_INVALID_STATUS);
+            }
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @ResponseBody
+    @PatchMapping("/image/{postId}/status")
+    public BaseResponse<String> modifyPostImageStatus(@PathVariable("postId") int postId, @RequestParam(required = false, defaultValue = "-1") int postImageId, @RequestBody Post post){
+        try {
+            //jwt에서 idx 추출.
+            int userId = jwtService.getUserId();
+
+            if(post.getStatus().equals("Invalid")){
+                if(postImageId != -1){
+                    PatchPostStatus patchPostStatus = new PatchPostStatus(userId,postId,postImageId,post.getStatus());
+                    postService.modifyOnePostImageStatus(patchPostStatus);
+                }
+                else{
+                    PatchPostStatus patchPostStatus = new PatchPostStatus(userId,postId,postImageId,post.getStatus());
+                    postService.modifyPostImageStatus(patchPostStatus);
+                }
+
+
+                String result = "";
+                return new BaseResponse<>(result);
+            }
+            else{
+                return new BaseResponse<>(PATCH_WISHLIST_INVALID_STATUS);
+            }
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
     }
 
 }
