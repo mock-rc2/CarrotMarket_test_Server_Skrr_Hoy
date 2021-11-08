@@ -3,6 +3,7 @@ package com.example.demo.src.post;
 
 import com.example.demo.src.post.model.*;
 import com.example.demo.src.user.model.PostUserReq;
+import com.example.demo.src.wishList.model.PatchWishListStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -271,6 +272,47 @@ public class PostDao {
                         rs.getString("status")),
                 categoryId
         );
+    }
+
+    //상태 수정
+    public int modifyPostStatus(PatchPostStatus patchPostStatus){
+        String modifyPostStatusQuery = "update Post set status = ? where postId = ? ";
+        Object[] modifyPostStatusParams = new Object[]{patchPostStatus.getStatus(), patchPostStatus.getPostId()};
+
+        return this.jdbcTemplate.update(modifyPostStatusQuery,modifyPostStatusParams);
+    }
+    //상태조회
+    public int checkPostStatus(int postId){
+        String checkPostQuery = "select exists(select * from Post where postId = ? && status='Valid')";
+        int checkWishListParams = postId;
+        return this.jdbcTemplate.queryForObject(checkPostQuery,
+                int.class,
+                checkWishListParams);
+
+    }
+    //유저의 관심목록이 맞는지 체크
+    public int checkUserPost(PatchPostStatus patchPostStatus){
+        String checkUserPostQuery = "select exists(select * from Post where userId = ? && postId = ?)";
+        Object[] checkUserPostParams = new Object[]{patchPostStatus.getUserId(), patchPostStatus.getPostId()};
+        return this.jdbcTemplate.queryForObject(checkUserPostQuery,
+                int.class,
+                checkUserPostParams);
+
+    }
+
+    //게시글 전체 이미지 삭제
+    public int modifyPostImageStatus(PatchPostStatus patchPostStatus){
+        String modifyPostImageStatusQuery = "update PostImage set status = ? where postId = ? ";
+        Object[] modifyPostImageStatusParams = new Object[]{patchPostStatus.getStatus(), patchPostStatus.getPostId()};
+
+        return this.jdbcTemplate.update(modifyPostImageStatusQuery,modifyPostImageStatusParams);
+    }
+    //게시글 특정 이미지 삭제
+    public int modifyOnePostImageStatus(PatchPostStatus patchPostStatus){
+        String modifyOnePostImageStatusQuery = "update PostImage set status = ? where postImageId = ? ";
+        Object[] modifyOnePostImageStatusParams = new Object[]{patchPostStatus.getStatus(), patchPostStatus.getPostImageId()};
+
+        return this.jdbcTemplate.update(modifyOnePostImageStatusQuery,modifyOnePostImageStatusParams);
     }
 
 }
