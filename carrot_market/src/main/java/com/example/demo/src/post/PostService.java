@@ -82,7 +82,10 @@ public class PostService {
         if(checkUserId == 0){//정상 상태가 아닌 유저라면
             throw new BaseException(POST_POST_INVALID_USER);
         }
-
+        int checkPostImageStatus = postDao.checkPostImageStatus(patchPostStatus.getPostId());
+        if(checkPostImageStatus == 0){//이미 삭제됐는지
+            throw new BaseException(MODIFY_FAIL_INVALID_POSTIMAGE);
+        }
         int checkUserPost = postDao.checkUserPost(patchPostStatus);
         if(checkUserPost == 0){//유저가 맞지 않으면
             throw new BaseException(MODIFY_FAIL_INVALID_USER_WISHLIST);
@@ -103,7 +106,10 @@ public class PostService {
         if(checkUserId == 0){//정상 상태가 아닌 유저라면
             throw new BaseException(POST_POST_INVALID_USER);
         }
-
+        int checkOnePostImageStatus = postDao.checkOnePostImageStatus(patchPostStatus.getPostImageId());
+        if(checkOnePostImageStatus == 0){//이미 삭제됐는지
+            throw new BaseException(MODIFY_FAIL_INVALID_POSTIMAGE);
+        }
         int checkUserPost = postDao.checkUserPost(patchPostStatus);
         if(checkUserPost == 0){//유저가 맞지 않으면
             throw new BaseException(MODIFY_FAIL_INVALID_USER_WISHLIST);
