@@ -2,6 +2,7 @@ package com.example.demo.src.post;
 
 
 import com.example.demo.src.post.model.*;
+import com.example.demo.src.user.model.PostUserReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -164,5 +165,70 @@ public class PostDao {
         );
     }
 
+    public int createPost(PostPostReq postPostReq){
+        String createPostQuery = "insert into Post (userId, townId, title, categoryId, cost, content) VALUES (?,?,?,?,?,?)";
+        Object[] createPostParams = new Object[]{postPostReq.getUserId(), postPostReq.getTownId(), postPostReq.getTitle(), postPostReq.getCategoryId(),postPostReq.getCost(),postPostReq.getContent()};
+        this.jdbcTemplate.update(createPostQuery, createPostParams);
+        String lastInserIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
+    }
+
+    public int createPostImage(PostPostImageReq postPostImageReq){
+        String createPostImageQuery = "insert into PostImage (postId, image) VALUES (?,?)";
+        Object[] createPostImageParams = new Object[]{postPostImageReq.getPostId(), postPostImageReq.getImage()};
+        this.jdbcTemplate.update(createPostImageQuery, createPostImageParams);
+        String lastInserIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
+    }
+
+    public List<PostSelectRes> getPostUseAddress(String selectPostQurey){
+        String getPostUseAddressQuery = "select postId, userId, townId, title, categoryId, cost, content, created, status from Post where ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
+        return this.jdbcTemplate.query(getPostUseAddressQuery,
+                (rs,rowNum) -> new PostSelectRes(
+                        rs.getInt("postId"),
+                        rs.getInt("userId"),
+                        rs.getInt("townId"),
+                        rs.getString("title"),
+                        rs.getInt("categoryId"),
+                        rs.getInt("cost"),
+                        rs.getString("content"),
+                        rs.getString("created"),
+                        rs.getString("status"))
+        );
+    }
+
+    public List<PostSelectRes> getPostUseAddressByKeyword(String selectPostQurey, String keyword){
+        String getPostUseAddressQuery = "select postId, userId, townId, title, categoryId, cost, content, created, status from Post where ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') AND title like concat('%', ?, '%') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
+        return this.jdbcTemplate.query(getPostUseAddressQuery,
+                (rs,rowNum) -> new PostSelectRes(
+                        rs.getInt("postId"),
+                        rs.getInt("userId"),
+                        rs.getInt("townId"),
+                        rs.getString("title"),
+                        rs.getInt("categoryId"),
+                        rs.getInt("cost"),
+                        rs.getString("content"),
+                        rs.getString("created"),
+                        rs.getString("status")),
+                keyword
+        );
+    }
+
+    public List<PostSelectRes> getPostUseAddressByCategory(String selectPostQurey, int categoryId){
+        String getPostUseAddressQuery = "select postId, userId, townId, title, categoryId, cost, content, created, status from Post where categoryId = ? AND ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
+        return this.jdbcTemplate.query(getPostUseAddressQuery,
+                (rs,rowNum) -> new PostSelectRes(
+                        rs.getInt("postId"),
+                        rs.getInt("userId"),
+                        rs.getInt("townId"),
+                        rs.getString("title"),
+                        rs.getInt("categoryId"),
+                        rs.getInt("cost"),
+                        rs.getString("content"),
+                        rs.getString("created"),
+                        rs.getString("status")),
+                categoryId
+        );
+    }
 
 }

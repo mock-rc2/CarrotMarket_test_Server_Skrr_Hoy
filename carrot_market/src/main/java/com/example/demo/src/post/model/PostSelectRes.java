@@ -7,11 +7,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PostPostReq {
+public class PostSelectRes {
+    private int postId;
     private int userId;
     private int townId;
     private String title;
     private int categoryId;
     private int cost;
     private String content;
+    private String created;
+    private String status;
+
 }
