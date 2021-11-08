@@ -73,6 +73,8 @@ public enum BaseResponseStatus {
     PATCH_RANGE_RANGE_ERROR(false, 2044, "선택한 범위로 변경할 수 없습니다."),
     //[Patch] /address/certification/:townId
     PATCH_SELECTED_ADDRESS_ERROR(false, 2045, "현재 내 동네와 현재 내 위치가 일치하지 않습니다."),
+
+    MODIFY_FAIL_INVALID_POST(false, 2070, "이미 삭제된 게시글입니다."),
     /**
      * 3000 : Response 오류
      */
