@@ -70,4 +70,31 @@ public class JwtService {
         return claims.getBody().get("userId",Integer.class);
     }
 
+
+    /*
+    JWT에서 exp 추출
+        @return int
+    @throws BaseException
+     */
+    public Date getExp() throws BaseException{
+        //1. JWT 추출
+        String accessToken = getJwt();
+        if(accessToken == null || accessToken.length() == 0){
+            throw new BaseException(EMPTY_JWT);
+        }
+
+        // 2. JWT parsing
+        Jws<Claims> claims;
+        try{
+            claims = Jwts.parser()
+                    .setSigningKey(Secret.JWT_SECRET_KEY)
+                    .parseClaimsJws(accessToken);
+        } catch (Exception ignored) {
+            throw new BaseException(INVALID_JWT);
+        }
+
+        // 3. exp
+        return claims.getBody().get("exp",Date.class);
+    }
+
 }

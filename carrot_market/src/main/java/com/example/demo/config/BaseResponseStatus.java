@@ -49,6 +49,7 @@ public enum BaseResponseStatus {
     //[POST] /post/title-image
     POST_POST_INVALID_POST(false, 2024, "조회할 수 없는 게시물 입니다."),
 
+
     //[POST] /wish-list/status/
     PATCH_WISHLIST_INVALID_STATUS(false, 2025, "Status가 제대로 입력되지 않았습니다."),
     MODIFY_FAIL_WISHLIST_STATUS(false, 2026, "Status 수정에 실패하였습니다."),
@@ -63,18 +64,24 @@ public enum BaseResponseStatus {
     //[POST]  /address/:townId
     CREATE_ADDRESS_ERROR(false, 2040, "동네를 3개 이상 추가할 수 없습니다."),
 
+
     //[PATCH]  /address/:townId
     PATCH_ADDRESS_EXIST_ERROR(false, 2041, "삭제할 동네가 존재하지 않습니다."),
 
     // [POST] /address/change/:townId
     POST_ADDRESS_CHANGE_ERROR(false, 2042, "동네를 변경할 수 없습니다"),
-    POST_ADDRESS_EXIST_ERROR(false, 2043, "변경할 동네가 존재하지 않습니다."),
+    POST_ADDRESS_EXIST_ERROR(false, 2043, "변경할 동네가 선택되지 않았습니다."),
     // [Patch] /address/:townId/:range
     PATCH_RANGE_RANGE_ERROR(false, 2044, "선택한 범위로 변경할 수 없습니다."),
+
     //[Patch] /address/certification/:townId
     PATCH_SELECTED_ADDRESS_ERROR(false, 2045, "현재 내 동네와 현재 내 위치가 일치하지 않습니다."),
+    //[Patch] users/profile/{userId}
+    NICKNAME_LENGTH_ERROR(false, 2046, "닉네임은 2자 이상 12자 이하로 입력해주세요"),
+    NICKNAME_UPDATED_ERROR(false, 2047, "최근 30일 내 닉네임을 수정한 적이 있어요."),
 
     MODIFY_FAIL_INVALID_POST(false, 2070, "이미 삭제된 게시글입니다."),
+
     /**
      * 3000 : Response 오류
      */
