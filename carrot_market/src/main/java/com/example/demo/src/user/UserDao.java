@@ -139,4 +139,5 @@ public class UserDao {
                 int.class,
                 checkNickNameUpdatedParams);
     }
+
 }

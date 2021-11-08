@@ -80,4 +80,12 @@ public class UserProvider {
         }
 
     }
+
+    public int getUserNickNameUpdated(int userId) throws BaseException{
+        try {
+            return 30 - userDao.checkNickNameUpdated(userId);
+        }catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

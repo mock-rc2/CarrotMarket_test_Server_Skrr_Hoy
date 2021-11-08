@@ -177,4 +177,21 @@ public class UserController {
         }
     }
 
+    /**
+     * 유저의 남은 닉네임 변경 불가 기간 조회
+     * [GET] /users/profile/{userId}
+     * @return BaseResponse<GetUserRes>
+     */
+    @ResponseBody
+    @GetMapping("/profile/{userId}")
+    public BaseResponse<Integer> getUserNickNameUpdated(@PathVariable("userId") int userId) throws BaseException {
+
+        try {
+            int getUserNickNameUpdated = userProvider.getUserNickNameUpdated(userId);
+            return new BaseResponse<>(getUserNickNameUpdated);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }
