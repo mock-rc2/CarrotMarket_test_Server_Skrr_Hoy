@@ -47,9 +47,7 @@ public class AddressController {
     @ResponseBody
     @GetMapping("")
     public BaseResponse<List<GetTownRes>> getTownSearchBySearch(@RequestParam("search") String search, @RequestParam("townId") int townId ) {
-        if(townId < 1 || townId >6561 ){
-            return new BaseResponse<>(GET_TOWN_EXIST_ERROR);
-        }
+
         try{
             List<GetTownRes> getTownRes = addressProvider.getTownBySearch(search, townId);
             return new BaseResponse<>(getTownRes);
@@ -155,10 +153,6 @@ public class AddressController {
     @ResponseBody
     @PatchMapping("/{townId}")
     public BaseResponse<String> PatchAddress(@PathVariable("townId") int townId){
-
-        if(townId < 1 || townId >6561 ){
-            return new BaseResponse<>(GET_TOWN_EXIST_ERROR);
-        }
 
 
         int userIdByJwt;
