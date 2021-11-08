@@ -15,7 +15,7 @@ public class PostSelectRes {
     private int categoryId;
     private int cost;
     private String content;
-    private String created;
+    private String time;
     private String status;
 
 }

@@ -76,12 +76,11 @@ public enum BaseResponseStatus {
 
     //[Patch] /address/certification/:townId
     PATCH_SELECTED_ADDRESS_ERROR(false, 2045, "현재 내 동네와 현재 내 위치가 일치하지 않습니다."),
-
     //[Patch] users/profile/{userId}
     NICKNAME_LENGTH_ERROR(false, 2046, "닉네임은 2자 이상 12자 이하로 입력해주세요"),
     NICKNAME_UPDATED_ERROR(false, 2047, "최근 30일 내 닉네임을 수정한 적이 있어요."),
 
-
+    MODIFY_FAIL_INVALID_POST(false, 2070, "이미 삭제된 게시글입니다."),
 
     /**
      * 3000 : Response 오류
