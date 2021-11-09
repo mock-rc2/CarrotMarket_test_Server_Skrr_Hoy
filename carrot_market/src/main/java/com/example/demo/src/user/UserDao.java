@@ -148,4 +148,13 @@ public class UserDao {
                 ),
                 userId);
     }
+
+    public void createCategory(int userId){
+        for (int i = 1; i <= 18; i++) {
+            String createCategoryQuery = "insert into InterestCategory (userId, categoryId) values (?, ?) ";
+            Object[] createCategoryParams = new Object[]{userId, i};
+
+            this.jdbcTemplate.update(createCategoryQuery, createCategoryParams);
+        }
+    }
 }
