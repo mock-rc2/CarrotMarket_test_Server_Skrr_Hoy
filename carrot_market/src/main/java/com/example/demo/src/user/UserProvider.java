@@ -100,23 +100,4 @@ public class UserProvider {
 
 
     }
-
-    public PostLoginRes logInJwt() throws BaseException{
-
-        //jwt에서 idx 추출.
-        int userId = jwtService.getUserId();
-
-        int checkUserId = userDao.checkUserId(userId);
-        if(checkUserId == 0){//정상 상태가 아닌 유저라면
-            throw new BaseException(POST_POST_INVALID_USER);
-        }
-        try{
-
-            String jwt = jwtService.createJwt(userId);
-            return new PostLoginRes(userId,jwt);
-        } catch (Exception exception){
-            throw new BaseException(DATABASE_ERROR);
-        }
-
-    }
 }

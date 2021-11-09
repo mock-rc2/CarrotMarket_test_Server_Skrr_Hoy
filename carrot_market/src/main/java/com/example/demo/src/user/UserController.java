@@ -229,23 +229,5 @@ public class UserController {
         }
     }
 
-    /**
-     * 자동 로그인 API
-     * [GET] /users/logIn/jwt
-     * @return BaseResponse<PostLoginRes>
-     */
-    @ResponseBody
-    @GetMapping("/logIn/jwt")
-    public BaseResponse<PostLoginRes> logInJwt(){
-        try{
-
-            PostLoginRes postLoginRes = userProvider.logInJwt();
-            return new BaseResponse<>(postLoginRes);
-        } catch (BaseException exception){
-            return new BaseResponse<>(exception.getStatus());
-        }
-    }
-
-
 
 }

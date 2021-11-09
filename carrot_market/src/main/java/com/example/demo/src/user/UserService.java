@@ -63,6 +63,7 @@ public class UserService {
 
             //주소 삽입
             userDao.createAddress(userId,townId);
+            userDao.createCategory(userId);
 
             //jwt 발급.
             String jwt = jwtService.createJwt(userId);

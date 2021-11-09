@@ -162,7 +162,7 @@ public class AddressDao {
 
     public void patchAddressStatusValid(int addressId){
 
-        String modifyLoginPasswordQuery = "update Address set status = 'Valid', selectAddress = 'Valid' where addressId = ?";
+        String modifyLoginPasswordQuery = "update Address set status = 'Valid', mainTown = 'Valid' where addressId = ?";
         Object[] modifyLoginPasswordParams = new Object[]{addressId};
 
         this.jdbcTemplate.update(modifyLoginPasswordQuery,modifyLoginPasswordParams);
@@ -192,17 +192,17 @@ public class AddressDao {
 
     }
     public void patchAddressStatusInvalid(int addressId){
-        String patchAddressStatusInvalidQuery = "update Address set status = 'Invalid', selectAddress ='Invalid' where addressId = ?";
+        String patchAddressStatusInvalidQuery = "update Address set status = 'Invalid', mainTown ='Invalid' where addressId = ?";
         Object[] patchAddressStatusInvalidParams = new Object[]{addressId};
 
         this.jdbcTemplate.update(patchAddressStatusInvalidQuery,patchAddressStatusInvalidParams);
     }
 
-    public void patchSelectAddress(int userId){
-        String patchSelectAddressQuery = "update Address set selectAddress = 'Invalid' where userId = ? and selectAddress = 'Valid'";
-        Object[] patchSelectAddressParams = new Object[]{userId};
+    public void patchmainTown(int userId){
+        String patchmainTownQuery = "update Address set mainTown = 'Invalid' where userId = ? and mainTown = 'Valid'";
+        Object[] patchmainTownParams = new Object[]{userId};
 
-        this.jdbcTemplate.update(patchSelectAddressQuery,patchSelectAddressParams);
+        this.jdbcTemplate.update(patchmainTownQuery,patchmainTownParams);
     }
 
 
@@ -216,7 +216,7 @@ public class AddressDao {
 
 
     public GetAddressRes getAddress(int userId){
-        String getAddressQuery = "select townId, certification, `range` from Address where userId = ? and selectAddress = 'Valid'  ";
+        String getAddressQuery = "select townId, certification, `range` from Address where userId = ? and mainTown = 'Valid'  ";
         return this.jdbcTemplate.queryForObject(getAddressQuery,
                 (rs, rowNum) -> new GetAddressRes(
                     rs.getInt("townId"),
@@ -280,7 +280,7 @@ public class AddressDao {
    }
 
     public int isSelectedAddress(int userId, int townId) {
-        String getIsSelectedTownQuery = "select exists( select addressId from Address where userId = ? and townId = ? and selectAddress = 'Valid')";
+        String getIsSelectedTownQuery = "select exists( select addressId from Address where userId = ? and townId = ? and mainTown = 'Valid')";
         return this.jdbcTemplate.queryForObject(getIsSelectedTownQuery,
                 int.class,
                 userId, townId
