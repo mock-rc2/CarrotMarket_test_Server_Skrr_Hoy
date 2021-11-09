@@ -167,11 +167,11 @@ public class PostProvider {
             for(int i=0;i<rangeList.size();i++){
                 if(i == rangeList.size()-1){
                     int Idx = rangeList.get(i);
-                    selectPostQurey += "townId = "+Idx;
+                    selectPostQurey += "P.townId = "+Idx;
                 }
                 else{
                     int Idx = rangeList.get(i);
-                    selectPostQurey += "townId = " + Idx + " OR ";
+                    selectPostQurey += "P.townId = " + Idx + " OR ";
                 }
 
             }
@@ -206,11 +206,11 @@ public class PostProvider {
             for(int i=0;i<rangeList.size();i++){
                 if(i == rangeList.size()-1){
                     int Idx = rangeList.get(i);
-                    selectPostQurey += "townId = "+Idx;
+                    selectPostQurey += "P.townId = "+Idx;
                 }
                 else{
                     int Idx = rangeList.get(i);
-                    selectPostQurey += "townId = " + Idx + " OR ";
+                    selectPostQurey += "P.townId = " + Idx + " OR ";
                 }
 
             }
@@ -245,11 +245,11 @@ public class PostProvider {
             for(int i=0;i<rangeList.size();i++){
                 if(i == rangeList.size()-1){
                     int Idx = rangeList.get(i);
-                    selectPostQurey += "townId = "+Idx;
+                    selectPostQurey += "P.townId = "+Idx;
                 }
                 else{
                     int Idx = rangeList.get(i);
-                    selectPostQurey += "townId = " + Idx + " OR ";
+                    selectPostQurey += "P.townId = " + Idx + " OR ";
                 }
 
             }

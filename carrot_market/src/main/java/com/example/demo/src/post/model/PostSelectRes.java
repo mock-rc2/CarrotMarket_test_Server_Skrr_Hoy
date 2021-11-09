@@ -10,7 +10,7 @@ import lombok.Setter;
 public class PostSelectRes {
     private int postId;
     private int userId;
-    private int townId;
+    private String townName;
     private String title;
     private int categoryId;
     private int cost;

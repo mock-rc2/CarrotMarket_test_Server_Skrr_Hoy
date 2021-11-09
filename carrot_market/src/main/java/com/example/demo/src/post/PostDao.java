@@ -142,7 +142,7 @@ public class PostDao {
     public GetPostImage getPostTitleImage(int postId){
         String getgetPostTitleImageQuery = "select postImageId, image\n" +
                 "from PostImage\n" +
-                "where postId = 13 && status = 'Valid'\n" +
+                "where postId = ? && status = 'Valid'\n" +
                 "order by postImageId asc,created asc limit 1;";    //디비에 이 쿼리를 날린다.
         return this.jdbcTemplate.queryForObject(getgetPostTitleImageQuery,
                 (rs,rowNum) -> new GetPostImage(
@@ -183,26 +183,26 @@ public class PostDao {
     }
 
     public List<PostSelectRes> getPostUseAddress(String selectPostQurey){
-        String getPostUseAddressQuery = "select postId, userId, townId, title, categoryId, cost, content, case" +
-                "           when TIMESTAMPDIFF(second, created, current_timestamp) < 60\n" +
-                "               then concat(TIMESTAMPDIFF(second, created, current_timestamp), '초 전') # 1분 미만에는 초로 표시\n" +
-                "           when TIMESTAMPDIFF(minute, created, current_timestamp) < 60\n" +
-                "               then concat(TIMESTAMPDIFF(minute, created, current_timestamp), '분 전') # 1시간 미만에는 분으로 표시\n" +
-                "           when TIMESTAMPDIFF(hour, created, current_timestamp) < 24\n" +
-                "               then concat(TIMESTAMPDIFF(hour, created, current_timestamp), '시간 전') # 24시간 미만에는 시간으로 표시\n" +
-                "           when TIMESTAMPDIFF(DAY, created, current_timestamp) < 31\n" +
-                "               then concat(TIMESTAMPDIFF(DAY, created, current_timestamp), '일 전') # 31일 미만에는 일로 표시\n" +
-                "            when TIMESTAMPDIFF(MONTH, created, current_timestamp) < 12\n" +
-                "               then concat(TIMESTAMPDIFF(MONTH, created, current_timestamp), '개월 전') # 12월 미만에는 월로 표시\n" +
-                "           when TIMESTAMPDIFF(YEAR, created, current_timestamp) >= 1\n" +
-                "               then concat(TIMESTAMPDIFF(YEAR, created, current_timestamp), '년 전') # 1년 이상은 년으로 표시\n" +
+        String getPostUseAddressQuery = "select P.postId, P.userId, T.townName, P.title, P.categoryId, P.cost, P.content, case" +
+                "           when TIMESTAMPDIFF(second, P.created, current_timestamp) < 60\n" +
+                "               then concat(TIMESTAMPDIFF(second, P.created, current_timestamp), '초 전') # 1분 미만에는 초로 표시\n" +
+                "           when TIMESTAMPDIFF(minute, P.created, current_timestamp) < 60\n" +
+                "               then concat(TIMESTAMPDIFF(minute, P.created, current_timestamp), '분 전') # 1시간 미만에는 분으로 표시\n" +
+                "           when TIMESTAMPDIFF(hour, P.created, current_timestamp) < 24\n" +
+                "               then concat(TIMESTAMPDIFF(hour, P.created, current_timestamp), '시간 전') # 24시간 미만에는 시간으로 표시\n" +
+                "           when TIMESTAMPDIFF(DAY, P.created, current_timestamp) < 31\n" +
+                "               then concat(TIMESTAMPDIFF(DAY, P.created, current_timestamp), '일 전') # 31일 미만에는 일로 표시\n" +
+                "            when TIMESTAMPDIFF(MONTH, P.created, current_timestamp) < 12\n" +
+                "               then concat(TIMESTAMPDIFF(MONTH, P.created, current_timestamp), '개월 전') # 12월 미만에는 월로 표시\n" +
+                "           when TIMESTAMPDIFF(YEAR, P.created, current_timestamp) >= 1\n" +
+                "               then concat(TIMESTAMPDIFF(YEAR, P.created, current_timestamp), '년 전') # 1년 이상은 년으로 표시\n" +
                 "\n" +
-                "           end as time, status from Post where ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
+                "           end as time, P.status from Post P left join (select townId, townName from Town) as T on P.townId=T.townId where ("+ selectPostQurey +") AND (P.status = 'Valid' OR P.status = 'Invalid') ORDER BY P.created DESC;";    //디비에 이 쿼리를 날린다.
         return this.jdbcTemplate.query(getPostUseAddressQuery,
                 (rs,rowNum) -> new PostSelectRes(
                         rs.getInt("postId"),
                         rs.getInt("userId"),
-                        rs.getInt("townId"),
+                        rs.getString("townName"),
                         rs.getString("title"),
                         rs.getInt("categoryId"),
                         rs.getInt("cost"),
@@ -213,26 +213,26 @@ public class PostDao {
     }
 
     public List<PostSelectRes> getPostUseAddressByKeyword(String selectPostQurey, String keyword){
-        String getPostUseAddressQuery = "select postId, userId, townId, title, categoryId, cost, content, case" +
-                "           when TIMESTAMPDIFF(second, created, current_timestamp) < 60\n" +
-                "               then concat(TIMESTAMPDIFF(second, created, current_timestamp), '초 전') # 1분 미만에는 초로 표시\n" +
-                "           when TIMESTAMPDIFF(minute, created, current_timestamp) < 60\n" +
-                "               then concat(TIMESTAMPDIFF(minute, created, current_timestamp), '분 전') # 1시간 미만에는 분으로 표시\n" +
-                "           when TIMESTAMPDIFF(hour, created, current_timestamp) < 24\n" +
-                "               then concat(TIMESTAMPDIFF(hour, created, current_timestamp), '시간 전') # 24시간 미만에는 시간으로 표시\n" +
-                "           when TIMESTAMPDIFF(DAY, created, current_timestamp) < 31\n" +
-                "               then concat(TIMESTAMPDIFF(DAY, created, current_timestamp), '일 전') # 31일 미만에는 일로 표시\n" +
-                "            when TIMESTAMPDIFF(MONTH, created, current_timestamp) < 12\n" +
-                "               then concat(TIMESTAMPDIFF(MONTH, created, current_timestamp), '개월 전') # 12월 미만에는 월로 표시\n" +
-                "           when TIMESTAMPDIFF(YEAR, created, current_timestamp) >= 1\n" +
-                "               then concat(TIMESTAMPDIFF(YEAR, created, current_timestamp), '년 전') # 1년 이상은 년으로 표시\n" +
+        String getPostUseAddressQuery = "select P.postId, P.userId, T.townName, P.title, P.categoryId, P.cost, P.content, case" +
+                "           when TIMESTAMPDIFF(second, P.created, current_timestamp) < 60\n" +
+                "               then concat(TIMESTAMPDIFF(second, P.created, current_timestamp), '초 전') # 1분 미만에는 초로 표시\n" +
+                "           when TIMESTAMPDIFF(minute, P.created, current_timestamp) < 60\n" +
+                "               then concat(TIMESTAMPDIFF(minute, P.created, current_timestamp), '분 전') # 1시간 미만에는 분으로 표시\n" +
+                "           when TIMESTAMPDIFF(hour, P.created, current_timestamp) < 24\n" +
+                "               then concat(TIMESTAMPDIFF(hour, P.created, current_timestamp), '시간 전') # 24시간 미만에는 시간으로 표시\n" +
+                "           when TIMESTAMPDIFF(DAY, P.created, current_timestamp) < 31\n" +
+                "               then concat(TIMESTAMPDIFF(DAY, P.created, current_timestamp), '일 전') # 31일 미만에는 일로 표시\n" +
+                "            when TIMESTAMPDIFF(MONTH, P.created, current_timestamp) < 12\n" +
+                "               then concat(TIMESTAMPDIFF(MONTH, P.created, current_timestamp), '개월 전') # 12월 미만에는 월로 표시\n" +
+                "           when TIMESTAMPDIFF(YEAR, P.created, current_timestamp) >= 1\n" +
+                "               then concat(TIMESTAMPDIFF(YEAR, P.created, current_timestamp), '년 전') # 1년 이상은 년으로 표시\n" +
                 "\n" +
-                "           end as time, status from Post where ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') AND title like concat('%', ?, '%') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
+                "           end as time, P.status from Post P left join (select townId, townName from Town) as T on P.townId=T.townId where ("+ selectPostQurey +") AND (P.status = 'Valid' OR P.status = 'Invalid') AND P.title like concat('%', ?, '%') ORDER BY P.created DESC;";    //디비에 이 쿼리를 날린다.
         return this.jdbcTemplate.query(getPostUseAddressQuery,
                 (rs,rowNum) -> new PostSelectRes(
                         rs.getInt("postId"),
                         rs.getInt("userId"),
-                        rs.getInt("townId"),
+                        rs.getString("townName"),
                         rs.getString("title"),
                         rs.getInt("categoryId"),
                         rs.getInt("cost"),
@@ -244,26 +244,26 @@ public class PostDao {
     }
 
     public List<PostSelectRes> getPostUseAddressByCategory(String selectPostQurey, int categoryId){
-        String getPostUseAddressQuery = "select postId, userId, townId, title, categoryId, cost, content, case" +
-                "           when TIMESTAMPDIFF(second, created, current_timestamp) < 60\n" +
-                "               then concat(TIMESTAMPDIFF(second, created, current_timestamp), '초 전') # 1분 미만에는 초로 표시\n" +
-                "           when TIMESTAMPDIFF(minute, created, current_timestamp) < 60\n" +
-                "               then concat(TIMESTAMPDIFF(minute, created, current_timestamp), '분 전') # 1시간 미만에는 분으로 표시\n" +
-                "           when TIMESTAMPDIFF(hour, created, current_timestamp) < 24\n" +
-                "               then concat(TIMESTAMPDIFF(hour, created, current_timestamp), '시간 전') # 24시간 미만에는 시간으로 표시\n" +
-                "           when TIMESTAMPDIFF(DAY, created, current_timestamp) < 31\n" +
-                "               then concat(TIMESTAMPDIFF(DAY, created, current_timestamp), '일 전') # 31일 미만에는 일로 표시\n" +
-                "            when TIMESTAMPDIFF(MONTH, created, current_timestamp) < 12\n" +
-                "               then concat(TIMESTAMPDIFF(MONTH, created, current_timestamp), '개월 전') # 12월 미만에는 월로 표시\n" +
-                "           when TIMESTAMPDIFF(YEAR, created, current_timestamp) >= 1\n" +
-                "               then concat(TIMESTAMPDIFF(YEAR, created, current_timestamp), '년 전') # 1년 이상은 년으로 표시\n" +
+        String getPostUseAddressQuery = "select P.postId, P.userId, T.townName, P.title, P.categoryId, P.cost, P.content, case" +
+                "           when TIMESTAMPDIFF(second, P.created, current_timestamp) < 60\n" +
+                "               then concat(TIMESTAMPDIFF(second, P.created, current_timestamp), '초 전') # 1분 미만에는 초로 표시\n" +
+                "           when TIMESTAMPDIFF(minute, P.created, current_timestamp) < 60\n" +
+                "               then concat(TIMESTAMPDIFF(minute, P.created, current_timestamp), '분 전') # 1시간 미만에는 분으로 표시\n" +
+                "           when TIMESTAMPDIFF(hour, P.created, current_timestamp) < 24\n" +
+                "               then concat(TIMESTAMPDIFF(hour, P.created, current_timestamp), '시간 전') # 24시간 미만에는 시간으로 표시\n" +
+                "           when TIMESTAMPDIFF(DAY, P.created, current_timestamp) < 31\n" +
+                "               then concat(TIMESTAMPDIFF(DAY, P.created, current_timestamp), '일 전') # 31일 미만에는 일로 표시\n" +
+                "            when TIMESTAMPDIFF(MONTH, P.created, current_timestamp) < 12\n" +
+                "               then concat(TIMESTAMPDIFF(MONTH, P.created, current_timestamp), '개월 전') # 12월 미만에는 월로 표시\n" +
+                "           when TIMESTAMPDIFF(YEAR, P.created, current_timestamp) >= 1\n" +
+                "               then concat(TIMESTAMPDIFF(YEAR, P.created, current_timestamp), '년 전') # 1년 이상은 년으로 표시\n" +
                 "\n" +
-                "           end as time, status from Post where categoryId = ? AND ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
+                "           end as time, P.status from Post P left join (select townId, townName from Town) as T on P.townId=T.townId where P.categoryId = ? AND ("+ selectPostQurey +") AND (P.status = 'Valid' OR P.status = 'Invalid') ORDER BY P.created DESC;";    //디비에 이 쿼리를 날린다.
         return this.jdbcTemplate.query(getPostUseAddressQuery,
                 (rs,rowNum) -> new PostSelectRes(
                         rs.getInt("postId"),
                         rs.getInt("userId"),
-                        rs.getInt("townId"),
+                        rs.getString("townName"),
                         rs.getString("title"),
                         rs.getInt("categoryId"),
                         rs.getInt("cost"),
