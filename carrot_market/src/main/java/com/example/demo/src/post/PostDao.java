@@ -258,7 +258,7 @@ public class PostDao {
                 "           when TIMESTAMPDIFF(YEAR, P.created, current_timestamp) >= 1\n" +
                 "               then concat(TIMESTAMPDIFF(YEAR, P.created, current_timestamp), '년 전') # 1년 이상은 년으로 표시\n" +
                 "\n" +
-                "           end as time, P.status from Post P left join (select townId, townName from Town) as T on P.townId=T.townId where P.categoryId = ? AND ("+ selectPostQurey +") AND (P.status = 'Valid' OR P.status = 'Invalid') ORDER BY P.created DESC;";    //디비에 이 쿼리를 날린다.
+                "           end as time, status from Post P left join (select townId, townName from Town) as T on P.townId=T.townId where categoryId = ? AND ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
         return this.jdbcTemplate.query(getPostUseAddressQuery,
                 (rs,rowNum) -> new PostSelectRes(
                         rs.getInt("postId"),
