@@ -31,5 +31,13 @@ public class CategoryService {
 
     }
 
+    public void patchUserCategory(int userId,int categoryId) throws BaseException{
+
+        try {
+            categoryDao.patchUserCategory(userId, categoryId);
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
 }
