@@ -148,4 +148,13 @@ public class UserDao {
                 ),
                 userId);
     }
+
+    public int checkUserId(int userId){
+        String checkUserIdQuery = "select exists(select phoneNumber from User where userId = ? && status='Valid')";
+        int checkUserIdParams = userId;
+        return this.jdbcTemplate.queryForObject(checkUserIdQuery,
+                int.class,
+                checkUserIdParams);
+
+    }
 }
