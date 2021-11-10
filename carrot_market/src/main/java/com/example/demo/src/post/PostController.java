@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.Date;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
@@ -67,7 +68,7 @@ public class PostController {
      */
 
     @ResponseBody
-    @GetMapping("/sales/{userId}")
+    @GetMapping("/{userId}/sales")
     public BaseResponse<List<AllPostSelectRes>> salePostSelect(@PathVariable("userId") int userId){
         try{
 
@@ -86,7 +87,7 @@ public class PostController {
      */
 
     @ResponseBody
-    @GetMapping("/deal-complete/{sellerUserId}/sale")
+    @GetMapping("/{sellerUserId}/sales/complete")
     public BaseResponse<List<AllPostSelectRes>> dealCompletePostSelect(@PathVariable("sellerUserId") int sellerUserId){
         try{
 
@@ -105,7 +106,7 @@ public class PostController {
      */
 
     @ResponseBody
-    @GetMapping("/hide/{userId}")
+    @GetMapping("/{userId}/hide")
     public BaseResponse<List<AllPostSelectRes>> hidePostSelect(@PathVariable("userId") int userId){
         try{
 
@@ -125,7 +126,7 @@ public class PostController {
      */
 
     @ResponseBody
-    @GetMapping("/deal-complete/{buyerUserId}/purchase")
+    @GetMapping("/{buyerUserId}/purchase/complete")
     public BaseResponse<List<AllPostSelectRes>> purchaseCompletePostSelect(@PathVariable("buyerUserId") int buyerUserId){
         try{
 
@@ -213,8 +214,18 @@ public class PostController {
     }
 
     @ResponseBody
-    @GetMapping("/inquire-use-address")
+    @GetMapping("")
     public BaseResponse<List<PostSelectRes>> getPostUseAddress(@RequestParam("townId") int townId, @RequestParam("range") int range, @RequestParam(required = false) String keyword, @RequestParam(required = false, defaultValue = "0") int categoryId){
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
         try{
             int userIdByJwt;
             userIdByJwt = jwtService.getUserId();
@@ -246,6 +257,16 @@ public class PostController {
     @ResponseBody
     @PatchMapping("/status/{postId}")
     public BaseResponse<String> modifyPostStatus(@PathVariable("postId") int postId, @RequestBody Post post){
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
         try {
             //jwt에서 idx 추출.
             int userId = jwtService.getUserId();
@@ -269,6 +290,16 @@ public class PostController {
     @ResponseBody
     @PatchMapping("/image/{postId}/status")
     public BaseResponse<String> modifyPostImageStatus(@PathVariable("postId") int postId, @RequestParam(required = false, defaultValue = "-1") int postImageId, @RequestBody Post post){
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
         try {
             //jwt에서 idx 추출.
             int userId = jwtService.getUserId();

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Date;
 import java.util.List;
 import static com.example.demo.config.BaseResponseStatus.*;
 
@@ -33,6 +34,11 @@ public class WishListProvider {
 
     //유저 관심 목록 조회
     public List<WishListSelectRes> wishListSelect() throws BaseException{
+        //토큰 유효기간 파악
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
         int userId = jwtService.getUserId();
         int checkUserId = wishListDao.checkUserId(userId);
         if(checkUserId == 0){//정상 상태가 아닌 유저라면

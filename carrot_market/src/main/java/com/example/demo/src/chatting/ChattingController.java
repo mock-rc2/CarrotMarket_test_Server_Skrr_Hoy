@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.Date;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
@@ -41,6 +42,16 @@ public class ChattingController {
     @ResponseBody
     @GetMapping("")
     public BaseResponse<List<GetChattingRoom>> allChattingSelect(){
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
         try{
             int userId = jwtService.getUserId();
             List<GetChattingRoom> allChattingSelect = chattingProvider.allChattingSelect(userId);
@@ -79,7 +90,6 @@ public class ChattingController {
     @GetMapping("{chattingRoomId}")
     public BaseResponse<List<GetChattingContent>> getAllChattingContent(@PathVariable("chattingRoomId") int chattingRoomId){
         try{
-            int userId = jwtService.getUserId();
             List<GetChattingContent> getAllChattingContent = chattingProvider.getAllChattingContent(chattingRoomId);
             return new BaseResponse<>(getAllChattingContent);
         } catch(BaseException exception){
@@ -104,6 +114,16 @@ public class ChattingController {
     @ResponseBody
     @PatchMapping("/{chattingRoomId}/status")
     public BaseResponse<String> modifyChattingRoomStatus(@PathVariable("chattingRoomId") int chattingRoomId, @RequestBody ChattingRoom chattingRoom){
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
         try {
             //jwt에서 idx 추출.
             int userId = jwtService.getUserId();
