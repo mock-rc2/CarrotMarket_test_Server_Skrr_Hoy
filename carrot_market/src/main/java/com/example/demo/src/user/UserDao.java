@@ -149,12 +149,12 @@ public class UserDao {
                 userId);
     }
 
-    public int checkUserId(int userId){
-        String checkUserIdQuery = "select exists(select phoneNumber from User where userId = ? && status='Valid')";
-        int checkUserIdParams = userId;
-        return this.jdbcTemplate.queryForObject(checkUserIdQuery,
-                int.class,
-                checkUserIdParams);
+    public void createCategory(int userId){
+        for (int i = 1; i <= 18; i++) {
+            String createCategoryQuery = "insert into InterestCategory (userId, categoryId) values (?, ?) ";
+            Object[] createCategoryParams = new Object[]{userId, i};
 
+            this.jdbcTemplate.update(createCategoryQuery, createCategoryParams);
+        }
     }
 }
