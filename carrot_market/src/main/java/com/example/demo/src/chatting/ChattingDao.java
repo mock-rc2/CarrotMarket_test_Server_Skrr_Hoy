@@ -135,6 +135,15 @@ public class ChattingDao {
         return this.jdbcTemplate.update(modifyPostStatusQuery,modifyPostStatusParams);
     }
 
+    //채팅 보내
+    public int createChattingContent(int chattingRoomId, int userId, PostChattingContentReq postChattingContentReq){
+        String createChattingContentQuery = "insert into ChattingContent (chattingRoomId, userId, content) VALUES (?,?,?)";
+        Object[] createChattingContentParams = new Object[]{chattingRoomId,userId,postChattingContentReq.getContent()};
+        this.jdbcTemplate.update(createChattingContentQuery, createChattingContentParams);
+        String lastInserIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
+    }
+
 
 
 

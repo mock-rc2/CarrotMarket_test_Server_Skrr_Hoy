@@ -283,7 +283,7 @@ public class PostDao {
     }
     //상태조회
     public int checkPostStatus(int postId){
-        String checkPostQuery = "select exists(select * from Post where postId = ? && status='Valid')";
+        String checkPostQuery = "select exists(select * from Post where postId = ? && status!='Delete')";
         int checkPostParams = postId;
         return this.jdbcTemplate.queryForObject(checkPostQuery,
                 int.class,
