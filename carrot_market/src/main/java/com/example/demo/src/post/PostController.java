@@ -67,7 +67,7 @@ public class PostController {
      */
 
     @ResponseBody
-    @GetMapping("/sales/{userId}")
+    @GetMapping("/{userId}/sales")
     public BaseResponse<List<AllPostSelectRes>> salePostSelect(@PathVariable("userId") int userId){
         try{
 
@@ -86,7 +86,7 @@ public class PostController {
      */
 
     @ResponseBody
-    @GetMapping("/deal-complete/{sellerUserId}/sale")
+    @GetMapping("/{sellerUserId}/sales/complete")
     public BaseResponse<List<AllPostSelectRes>> dealCompletePostSelect(@PathVariable("sellerUserId") int sellerUserId){
         try{
 
@@ -105,7 +105,7 @@ public class PostController {
      */
 
     @ResponseBody
-    @GetMapping("/hide/{userId}")
+    @GetMapping("/{userId}/hide")
     public BaseResponse<List<AllPostSelectRes>> hidePostSelect(@PathVariable("userId") int userId){
         try{
 
@@ -125,7 +125,7 @@ public class PostController {
      */
 
     @ResponseBody
-    @GetMapping("/deal-complete/{buyerUserId}/purchase")
+    @GetMapping("/{buyerUserId}/purchase/complete")
     public BaseResponse<List<AllPostSelectRes>> purchaseCompletePostSelect(@PathVariable("buyerUserId") int buyerUserId){
         try{
 
@@ -213,7 +213,7 @@ public class PostController {
     }
 
     @ResponseBody
-    @GetMapping("/inquire-use-address")
+    @GetMapping("")
     public BaseResponse<List<PostSelectRes>> getPostUseAddress(@RequestParam("townId") int townId, @RequestParam("range") int range, @RequestParam(required = false) String keyword, @RequestParam(required = false, defaultValue = "0") int categoryId){
         try{
             int userIdByJwt;
