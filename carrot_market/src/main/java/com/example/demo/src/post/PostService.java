@@ -125,6 +125,112 @@ public class PostService {
         }
     }
 
+    public void patchPostComplete(int postId, int userIdByJwt, int buyerUserId) throws BaseException {
+        //0. postId로 삭제된 post인지 확인
+        //1. postId로 userId 조회
+        //2. userId와 userIdByJwt가 같은 지 조회
+        //3. postId가 dealComplete에 있는 지 조회
+        //4. 없다면 추가 있다면 Invalid
+        //5. post에서 postId에 해당하는 status invalid 처리
+
+        //0.
+        if(postDao.checkPostDeleted(postId) == 1){
+            throw new BaseException(MODIFY_FAIL_INVALID_POST);
+        }
+        //1.
+        try{
+            int userId = postDao.getUserIdByPostId(postId);
+            //2.
+            if(userId != userIdByJwt){
+                throw new BaseException(INVALID_USER_JWT);
+            }
+
+            //3. dealcomplete에 이미 존재한다면
+            if(postDao.checkDealcomplete(postId) == 1){
+               //4
+                postDao.patchDealcomplete(postId, userId, buyerUserId);
+            }else{
+                // dealcomplete에 없다면
+                // 4
+                postDao.postDealComplete(postId,userId,buyerUserId);
+            }
+            // 5
+            postDao.patchPostStatusInvalid(postId, "Invalid");
+
+
+        } catch(Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void patchPostSale(int postId,int userIdByJwt) throws BaseException {
+        //0. postId로 삭제된 post인지 확인
+        //1. postId로 userId 조회
+        //2. userId와 userIdByJwt가 같은 지 조회
+        //3. postId가 dealComplete에 있는 지 조회
+        //4. 있다면 Valid
+        //5. post에서 postId에 해당하는 status Valid 처리
+
+        //0.
+        if(postDao.checkPostDeleted(postId) == 1){
+            throw new BaseException(MODIFY_FAIL_INVALID_POST);
+        }
+        //1.
+        try{
+            int userId = postDao.getUserIdByPostId(postId);
+            //2.
+            if(userId != userIdByJwt){
+                throw new BaseException(INVALID_USER_JWT);
+            }
+
+            //3. dealcomplete에 이미 존재한다면
+            if(postDao.checkDealcomplete(postId) == 1){
+                //4
+                postDao.patchDealcompleteSale(postId);
+            }
+            postDao.patchPostStatusInvalid(postId, "Valid");
+
+        } catch(Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+    public void patchPostReserved(int postId, int userIdByJwt, int bookerUserId) throws BaseException {
+        //0. postId로 삭제된 post인지 확인
+        //1. postId로 userId 조회
+        //2. userId와 userIdByJwt가 같은 지 조회
+        //3. postId가 dealComplete에 있는 지 조회
+        //4. 없다면 추가 있다면 Reserved
+        //5. post에서 postId에 해당하는 status Valid 처리
+
+        //0.
+        if(postDao.checkPostDeleted(postId) == 1){
+            throw new BaseException(MODIFY_FAIL_INVALID_POST);
+        }
+        //1.
+        try{
+            int userId = postDao.getUserIdByPostId(postId);
+            //2.
+            if(userId != userIdByJwt){
+                throw new BaseException(INVALID_USER_JWT);
+            }
+
+            //3. dealcomplete에 이미 존재한다면
+            if(postDao.checkDealcomplete(postId) == 1){
+                //4
+                postDao.patchDealcompleteReserved(postId, userId, bookerUserId);
+            }else{
+                // dealcomplete에 없다면
+                // 4
+                postDao.postDealcompleteReserved(postId,userId,bookerUserId);
+            }
+            // 5
+            postDao.patchPostStatusInvalid(postId, "Valid");
+
+
+        } catch(Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
 
 
