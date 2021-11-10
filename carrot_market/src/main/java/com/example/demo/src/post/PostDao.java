@@ -182,7 +182,7 @@ public class PostDao {
         return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
     }
 
-    public List<PostSelectRes> getPostUseAddress(String selectPostQurey){
+    public List<PostSelectRes> getPostUseAddress(String selectPostQurey, String interestCategoryQurey){
         String getPostUseAddressQuery = "select P.postId, P.userId, T.townName, P.title, P.categoryId, P.cost, P.content, case" +
                 "           when TIMESTAMPDIFF(second, P.created, current_timestamp) < 60\n" +
                 "               then concat(TIMESTAMPDIFF(second, P.created, current_timestamp), '초 전') # 1분 미만에는 초로 표시\n" +
@@ -197,7 +197,7 @@ public class PostDao {
                 "           when TIMESTAMPDIFF(YEAR, P.created, current_timestamp) >= 1\n" +
                 "               then concat(TIMESTAMPDIFF(YEAR, P.created, current_timestamp), '년 전') # 1년 이상은 년으로 표시\n" +
                 "\n" +
-                "           end as time, P.status from Post P left join (select townId, townName from Town) as T on P.townId=T.townId where ("+ selectPostQurey +") AND (P.status = 'Valid' OR P.status = 'Invalid') ORDER BY P.created DESC;";    //디비에 이 쿼리를 날린다.
+                "           end as time, P.status from Post P left join (select townId, townName from Town) as T on P.townId=T.townId where P.townId IN ("+ selectPostQurey +") AND P.categoryId IN (" + interestCategoryQurey + ") AND (P.status = 'Valid' OR P.status = 'Invalid') ORDER BY P.created DESC;";    //디비에 이 쿼리를 날린다.
         return this.jdbcTemplate.query(getPostUseAddressQuery,
                 (rs,rowNum) -> new PostSelectRes(
                         rs.getInt("postId"),
@@ -227,7 +227,7 @@ public class PostDao {
                 "           when TIMESTAMPDIFF(YEAR, P.created, current_timestamp) >= 1\n" +
                 "               then concat(TIMESTAMPDIFF(YEAR, P.created, current_timestamp), '년 전') # 1년 이상은 년으로 표시\n" +
                 "\n" +
-                "           end as time, P.status from Post P left join (select townId, townName from Town) as T on P.townId=T.townId where ("+ selectPostQurey +") AND (P.status = 'Valid' OR P.status = 'Invalid') AND P.title like concat('%', ?, '%') ORDER BY P.created DESC;";    //디비에 이 쿼리를 날린다.
+                "           end as time, P.status from Post P left join (select townId, townName from Town) as T on P.townId=T.townId where P.townId IN ("+ selectPostQurey +") AND (P.status = 'Valid' OR P.status = 'Invalid') AND P.title like concat('%', ?, '%') ORDER BY P.created DESC;";    //디비에 이 쿼리를 날린다.
         return this.jdbcTemplate.query(getPostUseAddressQuery,
                 (rs,rowNum) -> new PostSelectRes(
                         rs.getInt("postId"),
@@ -258,7 +258,7 @@ public class PostDao {
                 "           when TIMESTAMPDIFF(YEAR, P.created, current_timestamp) >= 1\n" +
                 "               then concat(TIMESTAMPDIFF(YEAR, P.created, current_timestamp), '년 전') # 1년 이상은 년으로 표시\n" +
                 "\n" +
-                "           end as time, status from Post P left join (select townId, townName from Town) as T on P.townId=T.townId where categoryId = ? AND ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
+                "           end as time, status from Post P left join (select townId, townName from Town) as T on P.townId=T.townId where categoryId = ? AND P.townId IN ("+ selectPostQurey +") AND (status = 'Valid' OR status = 'Invalid') ORDER BY created DESC;";    //디비에 이 쿼리를 날린다.
         return this.jdbcTemplate.query(getPostUseAddressQuery,
                 (rs,rowNum) -> new PostSelectRes(
                         rs.getInt("postId"),

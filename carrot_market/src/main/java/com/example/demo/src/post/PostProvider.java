@@ -6,6 +6,8 @@ import com.example.demo.config.BaseResponse;
 import com.example.demo.src.address.model.GetAddressRes;
 import com.example.demo.src.address.*;
 import com.example.demo.src.address.model.GetNearTownListRes;
+import com.example.demo.src.category.CategoryProvider;
+import com.example.demo.src.category.model.GetCategoryRes;
 import com.example.demo.src.post.model.*;
 import com.example.demo.src.user.model.PostLoginReq;
 import com.example.demo.src.user.model.PostLoginRes;
@@ -26,7 +28,7 @@ import static com.example.demo.config.BaseResponseStatus.*;
 @Service
 public class PostProvider {
     private final AddressProvider addressProvider;
-    private final AddressDao addressDao;//주소 사용하기 위해 추가
+    private final CategoryProvider categoryProvider;
     private final PostDao postDao;
     private final JwtService jwtService;
 
@@ -34,9 +36,9 @@ public class PostProvider {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public PostProvider(AddressProvider addressProvider, AddressDao addressDao,PostDao postDao, JwtService jwtService) {
+    public PostProvider(AddressProvider addressProvider, CategoryProvider categoryProvider,PostDao postDao, JwtService jwtService) {
         this.addressProvider = addressProvider;
-        this.addressDao = addressDao;//주소 사용하기 위해 추가
+        this.categoryProvider = categoryProvider;//주소 사용하기 위해 추가
         this.postDao = postDao;
         this.jwtService = jwtService;
     }
@@ -149,8 +151,10 @@ public class PostProvider {
 
         try{//range 값에 따라 다른 근처 동네를 조회해야 한다.
             GetNearTownListRes getNearTownListRes = addressProvider.getNearTownList(townId);
+            List<GetCategoryRes> getUserCategoryRes  = categoryProvider.getUserCategory(userId);//홈화면에서는 관심 카테고리 별로 다른 화면을 보여줘야한다.
             List<Integer> rangeList = null;
             String selectPostQurey = "";
+            String interestCategoryQurey = "";
             if(range == 0){
                 rangeList = getNearTownListRes.getRange1();
             }
@@ -167,16 +171,27 @@ public class PostProvider {
             for(int i=0;i<rangeList.size();i++){
                 if(i == rangeList.size()-1){
                     int Idx = rangeList.get(i);
-                    selectPostQurey += "P.townId = "+Idx;
+                    selectPostQurey += Idx;
                 }
                 else{
                     int Idx = rangeList.get(i);
-                    selectPostQurey += "P.townId = " + Idx + " OR ";
+                    selectPostQurey += Idx +",";
                 }
-
             }
 
-            List<PostSelectRes> getPostUseAddress = postDao.getPostUseAddress(selectPostQurey);
+            for(int i=0;i<getUserCategoryRes.size();i++){
+                if(i == getUserCategoryRes.size()-1){
+                    int Idx = getUserCategoryRes.get(i).getCategoryId();
+                    interestCategoryQurey += Idx;
+                }
+                else{
+                    int Idx = getUserCategoryRes.get(i).getCategoryId();
+                    interestCategoryQurey += Idx +",";
+                }
+            }
+
+
+            List<PostSelectRes> getPostUseAddress = postDao.getPostUseAddress(selectPostQurey,interestCategoryQurey);
             return getPostUseAddress;
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
@@ -206,13 +221,12 @@ public class PostProvider {
             for(int i=0;i<rangeList.size();i++){
                 if(i == rangeList.size()-1){
                     int Idx = rangeList.get(i);
-                    selectPostQurey += "P.townId = "+Idx;
+                    selectPostQurey += Idx;
                 }
                 else{
                     int Idx = rangeList.get(i);
-                    selectPostQurey += "P.townId = " + Idx + " OR ";
+                    selectPostQurey += Idx +",";
                 }
-
             }
 
             List<PostSelectRes> getPostUseAddressByKeyword = postDao.getPostUseAddressByKeyword(selectPostQurey,keyword);
@@ -245,13 +259,12 @@ public class PostProvider {
             for(int i=0;i<rangeList.size();i++){
                 if(i == rangeList.size()-1){
                     int Idx = rangeList.get(i);
-                    selectPostQurey += "P.townId = "+Idx;
+                    selectPostQurey += Idx;
                 }
                 else{
                     int Idx = rangeList.get(i);
-                    selectPostQurey += "P.townId = " + Idx + " OR ";
+                    selectPostQurey += Idx +",";
                 }
-
             }
 
             List<PostSelectRes> getPostUseAddressByCategory = postDao.getPostUseAddressByCategory(selectPostQurey,categoryId);
