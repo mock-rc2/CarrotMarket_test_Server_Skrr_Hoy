@@ -271,7 +271,7 @@ public class PostController {
             //jwt에서 idx 추출.
             int userId = jwtService.getUserId();
 
-            if(post.getStatus().equals("Invalid")){
+            if(post.getStatus().equals("Delete")){
                 PatchPostStatus patchPostStatus = new PatchPostStatus(userId,postId,0,post.getStatus());
                 postService.modifyPostStatus(patchPostStatus);
 
@@ -326,5 +326,67 @@ public class PostController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+
+    @ResponseBody
+    @PatchMapping("/{postId}/complete/{buyerUserId}")
+    public BaseResponse<String> patchPostComplete(@PathVariable("postId") int postId, @PathVariable("buyerUserId") int buyerUserId) {
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+            int userId = jwtService.getUserId();
+            postService.patchPostComplete(postId, userId, buyerUserId);
+
+            String result = "";
+            return new BaseResponse<>(result);
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
+    }
+
+    @ResponseBody
+    @PatchMapping("/{postId}/sale")
+    public BaseResponse<String> patchPostSale(@PathVariable("postId") int postId) {
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+            int userId = jwtService.getUserId();
+            postService.patchPostSale(postId, userId);
+
+            String result = "";
+            return new BaseResponse<>(result);
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
+    }
+
+    @ResponseBody
+    @PatchMapping("/{postId}/reserved/{bookerUserId}")
+    public BaseResponse<String> patchPostReserved(@PathVariable("postId") int postId, @PathVariable("bookerUserId") int bookerUserId) {
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+            int userId = jwtService.getUserId();
+            postService.patchPostReserved(postId, userId, bookerUserId);
+
+            String result = "";
+            return new BaseResponse<>(result);
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
+    }
+
 
 }

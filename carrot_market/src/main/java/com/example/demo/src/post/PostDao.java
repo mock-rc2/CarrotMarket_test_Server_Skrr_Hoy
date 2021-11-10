@@ -283,7 +283,7 @@ public class PostDao {
     }
     //상태조회
     public int checkPostStatus(int postId){
-        String checkPostQuery = "select exists(select * from Post where postId = ? && status='Valid')";
+        String checkPostQuery = "select exists(select * from Post where postId = ? && status!='Delete')";
         int checkPostParams = postId;
         return this.jdbcTemplate.queryForObject(checkPostQuery,
                 int.class,
@@ -334,4 +334,73 @@ public class PostDao {
 
     }
 
+
+
+    public int checkPostDeleted(int postId){
+        String checkPostDeletedQuery = "select exists(select * from Post where postId = ? && status='Delete')";
+        int checkPostDeletedParams = postId;
+        return this.jdbcTemplate.queryForObject(checkPostDeletedQuery,
+                int.class,
+                checkPostDeletedParams);
+    }
+    public int getUserIdByPostId(int postId){
+        String getUserIdByPostIdQuery = "select userId from Post where postId = ?";
+        int getUserIdByPostIdParams = postId;
+        return this.jdbcTemplate.queryForObject(getUserIdByPostIdQuery,
+                int.class,
+                getUserIdByPostIdParams);
+    }
+
+    public int checkDealcomplete(int postId){
+        String checkDealcompleteQuery = "select exists(select * from DealComplete where postId = ?)";
+        int checkDealcompleteParams = postId;
+        return this.jdbcTemplate.queryForObject(checkDealcompleteQuery,
+                int.class,
+                checkDealcompleteParams);
+    }
+
+    public void patchDealcomplete(int postId,int userId,int buyerUserId){
+        String patchDealcompleteQuery = "update DealComplete set status = 'Invalid', sellerUserId = ?, buyerUserId = ? where postId = ? ";
+        Object[] patchDealcompleteParams = new Object[]{userId, buyerUserId, postId };
+
+        this.jdbcTemplate.update(patchDealcompleteQuery,patchDealcompleteParams);
+    }
+
+    public void postDealComplete(int postId,int userId,int buyerUserId){
+        String postDealCompleteQuery = "insert into DealComplete (postId, sellerUserId, buyerUserId, status) VALUES (?,?,?, 'Invalid')";
+        Object[] postDealCompleteParams = new Object[]{postId, userId, buyerUserId};
+        this.jdbcTemplate.update(postDealCompleteQuery, postDealCompleteParams);
+
+    }
+
+    public void patchPostStatusInvalid(int postId, String status){
+        String patchPostStatusInvalidQuery = "update Post set status = ? where postId = ?";
+        Object[] patchPostStatusInvalidParams = new Object[]{ status, postId };
+
+        this.jdbcTemplate.update(patchPostStatusInvalidQuery,patchPostStatusInvalidParams);
+    }
+
+    public void patchDealcompleteSale(int postId){
+        String patchDealcompleteSaleQuery = "update DealComplete set status = 'Valid' where postId = ? ";
+        Object[] patchDealcompleteSaleParams = new Object[]{ postId };
+
+        this.jdbcTemplate.update(patchDealcompleteSaleQuery, patchDealcompleteSaleParams );
+
+    }
+
+
+
+    public void patchDealcompleteReserved(int postId,int userId,int bookerUserId){
+        String patchDealcompleteReservedQuery = "update DealComplete set status = 'Reserved', sellerUserId = ?, bookerUserId = ? where postId = ? ";
+        Object[] patchDealcompleteReservedParams = new Object[]{userId, bookerUserId, postId };
+
+        this.jdbcTemplate.update(patchDealcompleteReservedQuery,patchDealcompleteReservedParams);
+    }
+
+
+    public void postDealcompleteReserved(int postId,int userId,int bookerUserId){
+        String postDealCompleteQuery = "insert into DealComplete (postId, sellerUserId, bookerUserId, status) VALUES (?,?,?, 'Reserved')";
+        Object[] postDealCompleteParams = new Object[]{postId, userId, bookerUserId};
+        this.jdbcTemplate.update(postDealCompleteQuery, postDealCompleteParams);
+    }
 }
