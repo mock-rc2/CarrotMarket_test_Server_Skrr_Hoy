@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.Date;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
@@ -81,6 +82,16 @@ public class WishListController {
     @ResponseBody
     @PatchMapping("/status/{wishListId}")
     public BaseResponse<String> modifyWishListStatus(@PathVariable("wishListId") int wishListId, @RequestBody WishList wishList){
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
         try {
             //jwt에서 idx 추출.
             int userId = jwtService.getUserId();
