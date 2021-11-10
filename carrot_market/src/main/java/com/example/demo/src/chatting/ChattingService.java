@@ -61,6 +61,17 @@ public class ChattingService {
         }
     }
 
+    public PostChattingContentRes createChattingContent(int chattingRoomId, int userId,PostChattingContentReq postChattingContentReq) throws BaseException{
+
+        try{
+            int chattingContentId = chattingDao.createChattingContent(chattingRoomId, userId,postChattingContentReq);
+            return new PostChattingContentRes(chattingContentId);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+    }
+
 
 
 
