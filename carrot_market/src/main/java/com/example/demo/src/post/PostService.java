@@ -130,7 +130,7 @@ public class PostService {
         //1. postId로 userId 조회
         //2. userId와 userIdByJwt가 같은 지 조회
         //3. postId가 dealComplete에 있는 지 조회
-        //4. 없다면 추가 있다면 Invalid
+        //4. 없다면 추가 있다면 Valid
         //5. post에서 postId에 해당하는 status invalid 처리
 
         //0.
@@ -168,7 +168,7 @@ public class PostService {
         //1. postId로 userId 조회
         //2. userId와 userIdByJwt가 같은 지 조회
         //3. postId가 dealComplete에 있는 지 조회
-        //4. 있다면 Valid
+        //4. 있다면 Invalid
         //5. post에서 postId에 해당하는 status Valid 처리
 
         //0.

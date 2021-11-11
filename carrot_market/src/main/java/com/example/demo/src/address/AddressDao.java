@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 @Repository
@@ -22,38 +24,63 @@ public class AddressDao {
     }
 
 
-    public List<GetTownRes> getTownOrderByAddress(String search,Double lat,Double lng){
-        String getTownOrderByAddressQuery = "select city,\n" +
+    public List<GetTownRes> getTownOrderByAddress(String[] search,Double lat,Double lng){
+        String q0 = "select  a1.city,\n" +
+                "       a1.district,\n" +
+                "       a1.townName, a1.etc\n" +
+                "from\n";
+        String q1 = "(select city,\n" +
                 "       district,\n" +
                 "       townName,\n" +
                 "       case\n" +
                 "           when T.townId in (select townId from TownEtc where etc is not null)\n" +
                 "               then group_concat(etc separator ', ')\n" +
                 "           else NULL\n" +
-                "           end as etc\n" +
+                "           end as etc,\n" +
+                "lat, lng\n"+
                 "\n" +
                 "from Town as T\n" +
                 "         left outer join TownEtc TE on T.townId = TE.townId\n" +
-                "where city like concat('%', ?, '%')\n" +
-                "   or district like concat('%', ?, '%')\n" +
-                "   or townName like concat('%', ?, '%')\n" +
-                "   or T.townId in (select townId from TownEtc where etc like concat('%', ?, '%'))\n" +
-                "group by city, district, townName, lat, lng\n" +
-                "order by (6371 * acos(cos(radians(?)) * cos(radians(lat)) * cos(radians(lng) - radians(?)) +\n" +
-                "                      sin(radians(?)) * sin(radians(lat))))";
+                "where city like concat('%','";
+        String q2 = "', '%')\n" +
+                "   or district like concat('%','";
+        String q3 =  "', '%')\n" +
+                "   or townName like concat('%','";
+        String q4 =  "', '%')\n" +
+                "   or T.townId in (select townId from TownEtc where etc like concat('%','";
+        String q5 = "', '%'))\n" +
+                "group by city, district, townName , lat,lng \n";
+
+
+        String order = "order by (6371 * acos(cos(radians("+lat+")) * cos(radians(lat)) * cos(radians(lng) - radians("+lng+")) +\n" +
+                " sin(radians("+lat+")) * sin(radians(lat)))))\n";
+
+        String getTownOrderByAddressQuery = q0 +  q1 + search[0] + q2 + search[0] + q3 + search[0] + q4 + search[0] + q5 + order;
+        getTownOrderByAddressQuery += " as a1\n";
+
+        for(int i = 1; i < search.length; i++) {
+            getTownOrderByAddressQuery += "inner join  " + q1 + search[i] + q2 + search[i] + q3 + search[i] + q4 + search[i] + q5 + order
+                    + "as a" + (i + 1) + " on a" + i + ".city = a" + (i + 1) + ".city and a" + i + ".district = a" + (i + 1) + ".district and a" + i + ".townName = a" + (i + 1) + ".townName\n";
+        }
+
+
+
+
         return this.jdbcTemplate.query(getTownOrderByAddressQuery,
                 (rs, rowNum) -> new GetTownRes(
                         rs.getString("city"),
                         rs.getString("district"),
                         rs.getString("townName"),
                         rs.getString("etc")
-                ),
-
-                search,search,search,search,lat,lng,lat);
+                ));
     }
 
-    public List<GetTownRes> getTownOrderByName(String search){
-        String getTownOrderByNameQuery = "select city,\n" +
+    public List<GetTownRes> getTownOrderByName(String[] search){
+        String q0 = "select  a1.city,\n" +
+                "       a1.district,\n" +
+                "       a1.townName, a1.etc\n" +
+                "from\n";
+        String q1 = "(select city,\n" +
                 "       district,\n" +
                 "       townName,\n" +
                 "       case\n" +
@@ -64,21 +91,37 @@ public class AddressDao {
                 "\n" +
                 "from Town as T\n" +
                 "         left outer join TownEtc TE on T.townId = TE.townId\n" +
-                "where city like concat('%', ?, '%')\n" +
-                "   or district like concat('%', ?, '%')\n" +
-                "   or townName like concat('%', ?, '%')\n" +
-                "   or T.townId in (select townId from TownEtc where etc like concat('%', ?, '%'))\n" +
-                "group by city, district, townName\n" +
-                "order by city, district, townName";
-        return this.jdbcTemplate.query(getTownOrderByNameQuery,
-                (rs, rowNum) -> new GetTownRes(
-                        rs.getString("city"),
-                        rs.getString("district"),
-                        rs.getString("townName"),
-                        rs.getString("etc")
-                ),
+                "where city like concat('%','";
+        String q2 = "', '%')\n" +
+                "   or district like concat('%','";
+        String q3 =  "', '%')\n" +
+                "   or townName like concat('%','";
+        String q4 =  "', '%')\n" +
+                "   or T.townId in (select townId from TownEtc where etc like concat('%','";
+        String q5 = "', '%'))\n" +
+                "group by city, district, townName\n)";
 
-                search,search,search,search);
+        String order = "order by city, district, townName\n";
+
+        String getTownOrderByNameQuery = q0 +  q1 + search[0] + q2 + search[0] + q3 + search[0] + q4 + search[0] + q5;
+        getTownOrderByNameQuery += " as a1\n";
+
+        for(int i = 1; i < search.length; i++) {
+                getTownOrderByNameQuery += "inner join  " + q1 + search[1] + q2 + search[1] + q3 + search[1] + q4 + search[1] + q5
+                        + "as a"+(i+1) +" on a"+i+".city = a"+(i+1)+".city and a"+i+".district = a"+(i+1)+".district and a"+i+".townName = a"+(i+1)+".townName\n";
+        }
+        getTownOrderByNameQuery += order;
+
+
+        return this.jdbcTemplate.query(getTownOrderByNameQuery,
+                        (rs, rowNum) -> new GetTownRes(
+                                rs.getString("city"),
+                                rs.getString("district"),
+                                rs.getString("townName"),
+                                rs.getString("etc")
+                        ));
+
+
     }
 
     public GetLocation getLocation(int townId){
@@ -300,6 +343,7 @@ public class AddressDao {
         this.jdbcTemplate.update(patchCertificatioUpdatedQuery,patchCertificatioUpdatedParams);
 
     }
+
 }
 
 

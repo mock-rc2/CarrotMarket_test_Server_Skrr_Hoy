@@ -36,6 +36,7 @@ public class AddressProvider {
         // 1. townId가 존재한다면 getTownOrderByAddress() 실행
         // 2. townId가 존재하지 않는다면 getTownOrderByName() 실행
 
+        String[] search_list = search.split(" ");
         List<GetTownRes> getTownRes;
         GetLocation getLoc;
         try {
@@ -43,11 +44,11 @@ public class AddressProvider {
             //1. townId가 존재한다면
             if(townId != -1){
                 getLoc = addressDao.getLocation(townId);
-                getTownRes = addressDao.getTownOrderByAddress(search, getLoc.getLat(),getLoc.getLng());
+                getTownRes = addressDao.getTownOrderByAddress(search_list, getLoc.getLat(),getLoc.getLng());
             }
             //2 townId가 존재하지 않는다면
             else{
-                getTownRes = addressDao.getTownOrderByName(search);
+                getTownRes = addressDao.getTownOrderByName(search_list);
             }
 
             return getTownRes;
