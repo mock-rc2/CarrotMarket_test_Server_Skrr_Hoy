@@ -166,4 +166,22 @@ public class UserDao {
                 checkUserIdParams);
 
     }
+
+    void saveCertificationInfo(String phoneNumber, String certificationNum) {
+        String saveCertificationInfoQuery = "insert into Oauth (phoneNumber, certificationNum) values (?, ?) ";
+        Object[] saveCertificationInfoParams = new Object[]{phoneNumber, certificationNum};
+        this.jdbcTemplate.update(saveCertificationInfoQuery, saveCertificationInfoParams);
+    }
+
+    //유저 인증번호 일치 여부 조회 쿼리-Oauth
+    public int checkCertificationNumByOauth(PostLoginReq postLoginReq){
+        String checkCertificationNumQuery = "select exists(select phoneNumber from Oauth where phoneNumber = ? && certificationNum= ?)";
+        Object[] checkCertificationNumParams = new Object[]{postLoginReq.getPhoneNumber(), postLoginReq.getCertificationNum()};
+        return this.jdbcTemplate.queryForObject(checkCertificationNumQuery,
+                int.class,
+                checkCertificationNumParams);
+
+    }
+
+
 }

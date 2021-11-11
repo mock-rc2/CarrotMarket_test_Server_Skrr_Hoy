@@ -1,6 +1,9 @@
 package com.example.demo.src.user;
 
 import com.example.demo.src.address.model.GetTownNameRes;
+import net.nurigo.java_sdk.api.Message;
+import net.nurigo.java_sdk.exceptions.CoolsmsException;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.demo.config.BaseException;
@@ -12,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.utils.ValidationRegex.*;
@@ -250,6 +255,74 @@ public class UserController {
         try{
 
             PostLoginRes postLoginRes = userProvider.logInJwt();
+            return new BaseResponse<>(postLoginRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/logIn/message/{phoneNumber}")
+    public void testSend(@PathVariable("phoneNumber") String phoneNumber) {
+        String api_key = ""; //사이트에서 발급 받은 API KEY
+        String api_secret = ""; //사이트에서 발급 받은 API
+        Message coolsms = new Message(api_key, api_secret);
+        HashMap<String, String> params = new HashMap<String, String>();
+        //난수 생성
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 57; // letter '9'
+        int targetStringLength = 6;
+        Random random = new Random();
+        String certificationNum = random.ints(leftLimit,rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+        //DB저장
+        userService.saveCertificationInfo(phoneNumber,certificationNum);
+        params.put("to", phoneNumber);
+        params.put("from", phoneNumber); //사전에 사이트에서 번호를 인증하고 등록하여야 함
+        params.put("type", "SMS");
+        params.put("text", "인증 번호는 "+ certificationNum + " 입니다."); //메시지 내용
+        params.put("app_version", "test app 1.2");
+        try { JSONObject obj = (JSONObject) coolsms.send(params);
+            System.out.println(obj.toString()); //전송 결과 출력
+        } catch (CoolsmsException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getCode());
+        }
+    }
+
+    @ResponseBody
+    @PostMapping("/logIn/message")
+    public BaseResponse<PostLoginRes> logInByOauth(@RequestBody PostLoginReq postLoginReq){
+        try{
+
+            //휴대폰번호 입력 체크
+            if(postLoginReq.getPhoneNumber() == null){
+                return new BaseResponse<>(POST_USERS_EMPTY_PHONE);
+            }
+            //휴대폰 정규표현
+            if(!isRegexPhone(postLoginReq.getPhoneNumber())){
+                return new BaseResponse<>(POST_USERS_INVALID_PHONE);
+            }
+            //인증번호 입력 체크
+            if(postLoginReq.getCertificationNum() == null){
+                return new BaseResponse<>(POST_USERS_EMPTY_CERTIFICATIONNUM);
+            }
+            //정상 상태 유저인지 체크
+            //정상 상태가 아니라면 -> 회원가입으로 유도
+            int checkStatus = userProvider.checkStatus(postLoginReq.getPhoneNumber());
+            if(checkStatus == 0){//정상 상태가 아닌 유저라면
+                return new BaseResponse<>(POST_USERS_INVALID_USER);
+            }
+
+            //인증번호가 일치하는지 체크 - Ouath이용
+            int checkCertificationNum = userProvider.checkCertificationNumByOauth(postLoginReq);
+            if(checkCertificationNum == 0){//정상 상태가 아닌 유저라면
+                return new BaseResponse<>(POST_USERS_INVALID_CERTIFICATIONNUM);
+            }
+
+            PostLoginRes postLoginRes = userProvider.logIn(postLoginReq);
             return new BaseResponse<>(postLoginRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
