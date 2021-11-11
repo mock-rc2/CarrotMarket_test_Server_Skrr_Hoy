@@ -360,14 +360,14 @@ public class PostDao {
     }
 
     public void patchDealcomplete(int postId,int userId,int buyerUserId){
-        String patchDealcompleteQuery = "update DealComplete set status = 'Invalid', sellerUserId = ?, buyerUserId = ? where postId = ? ";
+        String patchDealcompleteQuery = "update DealComplete set status = 'Valid', sellerUserId = ?, buyerUserId = ? where postId = ? ";
         Object[] patchDealcompleteParams = new Object[]{userId, buyerUserId, postId };
 
         this.jdbcTemplate.update(patchDealcompleteQuery,patchDealcompleteParams);
     }
 
     public void postDealComplete(int postId,int userId,int buyerUserId){
-        String postDealCompleteQuery = "insert into DealComplete (postId, sellerUserId, buyerUserId, status) VALUES (?,?,?, 'Invalid')";
+        String postDealCompleteQuery = "insert into DealComplete (postId, sellerUserId, buyerUserId, status) VALUES (?,?,?, 'Valid')";
         Object[] postDealCompleteParams = new Object[]{postId, userId, buyerUserId};
         this.jdbcTemplate.update(postDealCompleteQuery, postDealCompleteParams);
 
@@ -381,7 +381,7 @@ public class PostDao {
     }
 
     public void patchDealcompleteSale(int postId){
-        String patchDealcompleteSaleQuery = "update DealComplete set status = 'Valid' where postId = ? ";
+        String patchDealcompleteSaleQuery = "update DealComplete set status = 'Invalid' where postId = ? ";
         Object[] patchDealcompleteSaleParams = new Object[]{ postId };
 
         this.jdbcTemplate.update(patchDealcompleteSaleQuery, patchDealcompleteSaleParams );
