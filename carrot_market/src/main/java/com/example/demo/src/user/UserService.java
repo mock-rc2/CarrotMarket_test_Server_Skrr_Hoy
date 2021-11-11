@@ -98,4 +98,8 @@ public class UserService {
         }
     }
 
+    void saveCertificationInfo(String phoneNumber, String certificationNum){
+        userDao.saveCertificationInfo(phoneNumber, certificationNum);
+    }
+
 }

@@ -119,4 +119,12 @@ public class UserProvider {
         }
 
     }
+
+    public int checkCertificationNumByOauth(PostLoginReq postLoginReq) throws BaseException{
+        try{
+            return userDao.checkCertificationNumByOauth(postLoginReq);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
