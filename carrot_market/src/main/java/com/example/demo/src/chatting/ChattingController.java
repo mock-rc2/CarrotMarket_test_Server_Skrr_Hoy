@@ -144,6 +144,28 @@ public class ChattingController {
         }
     }
 
+    @ResponseBody
+    @PostMapping("/{chattingRoomId}/content")
+    public BaseResponse<PostChattingContentRes> postChattingContent(@PathVariable("chattingRoomId") int chattingRoomId, @RequestBody PostChattingContentReq postChattingContentReq){
+        //토큰 유효기간 파악
+        try {
+            Date current = new Date(System.currentTimeMillis());
+            if(current.after(jwtService.getExp())){
+                throw new BaseException(INVALID_JWT);
+            }
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
+        try{
+            int userId = jwtService.getUserId();
+            PostChattingContentRes postChattingContentRes = chattingService.createChattingContent(chattingRoomId, userId, postChattingContentReq);
+            return new BaseResponse<>(postChattingContentRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 
 
